@@ -130,15 +130,6 @@ export default function Page() {
             </div>
           ))}
         </div>
-
-        {/* 行ラベル */}
-        <div style={styles.rowLabels}>
-          {tasks.map((t, i) => (
-            <div key={t.id} style={{ ...styles.rowLabel, top: `${i * 40}px` }}>
-              {t.name}
-            </div>
-          ))}
-        </div>
       </div>
 
       {/* ---- テーブル ---- */}
@@ -272,10 +263,10 @@ const styles = {
     position: 'relative',
     border: '1px solid #e5e7eb',
     borderRadius: 8,
-    padding: '40px 16px 16px',
+    padding: '40px 16px',
     overflowX: 'auto',
     overflowY: 'hidden',
-    height: 200 + 40, // 行ラベル分のマージン
+    height: 200, // 行ラベル分のマージン
   },
 
   grid: {
