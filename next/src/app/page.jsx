@@ -175,7 +175,7 @@ export default function Page() {
                       max={100}
                       value={editRow.progress}
                       onChange={(e) => setEditRow((s) => ({ ...s, progress: e.target.value }))}
-                      style={{ ...styles.input, width: 90, textAlign: 'right' }}
+                      style={{ ...styles.input, width: 80, textAlign: 'right' }}
                     />
                   ) : `${t.progress}%`}
                 </td>
