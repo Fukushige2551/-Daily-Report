@@ -1,0 +1,21 @@
+/** modifier */
+.c-th {
+    &--sunday {
+        background-color: #5d0000;
+    }
+    &--saturday {
+        background-color: #070057;
+    }
+}
+.c-td {
+    &--parent {
+        background-color: #121212;
+        border-right: none;
+    }
+    &--child {
+        padding-left: 32px;
+    }
+    &--number {
+        text-align: right;
+    }
+}

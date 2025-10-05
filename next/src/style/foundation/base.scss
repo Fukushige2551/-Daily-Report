@@ -1,0 +1,38 @@
+html {
+    font-size: 62.5%;
+}
+body {
+    background-color: #222;
+}
+main {
+    color: #fff;
+    padding: 24px;
+}
+h1, h2 {
+    font-weight: bold;
+}
+tr {
+    &:last-child {
+        td {
+            border-bottom: none;
+        }
+    }
+}
+th {
+    padding: 8px 0;
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid #555;
+    font-size: 1.4rem;
+}
+td {
+    padding: 8px 16px;
+    border-bottom: 1px solid #333;
+    border-right: 1px solid #333;
+    font-size: 1.2rem;
+}
+th, td {
+    &:last-child {
+        border-right: none;
+    }
+}

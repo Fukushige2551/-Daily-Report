@@ -1,0 +1,56 @@
+/** p-app */
+
+.p-app {
+    h1 {
+        margin-bottom: 24px;
+    }
+    &__section {
+        padding: 0 16px;
+        margin-bottom: 24px;
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        &__title {
+            margin-bottom: 8px;
+        }
+        &__main {
+            border: 1px solid #fff;
+            border-radius: 8px;
+        }
+    }
+    .wbs {
+        background-color: #121212;
+
+        &__table {
+            table-layout: fixed;
+
+            th {
+                padding: 0;
+            }
+            td {
+                border-right: none;
+            }
+        }
+        &__title {
+            white-space: nowrap;
+            color: #666;
+        }
+        &__bar {
+            position: relative;
+            height: 8px;
+            border-radius: 999px;
+            background-color: #ddd; /* ベース */
+            overflow: hidden;
+
+            &__fill {
+                height: 100%;
+            }
+
+            &.status-1 .wbs__bar__fill { background: #60a5fa; }
+            &.status-2 .wbs__bar__fill { background: #34d399; }
+            &.status-3 .wbs__bar__fill { background: #222; }
+        }
+    }
+}
