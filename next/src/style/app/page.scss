@@ -18,17 +18,13 @@
         &__main {
             border: 1px solid #fff;
             border-radius: 8px;
+            overflow: auto;
         }
     }
     .wbs {
         background-color: #121212;
 
         &__table {
-            table-layout: fixed;
-
-            th {
-                padding: 0;
-            }
             td {
                 border-right: none;
             }

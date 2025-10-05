@@ -78,58 +78,58 @@ export default function Page() {
             <section className='p-app__section'>
                 <h2 className='p-app__section__title'>ガントチャート</h2>
                 <div className='p-app__section__main wbs'>
-                <table className='wbs__table'>
-                    <thead>
-                        <tr>
-                            {days.map((d, i) => {
-                                let day = 'default';
-                                switch (true) {
-                                    case isSunday(d):
-                                        day = 'sunday'
-                                        break
-                                    case isSaturday(d):
-                                        day = 'saturday'
-                                        break
-                                }
+                    <table className='c-table wbs__table'>
+                        <thead>
+                            <tr>
+                                {days.map((d, i) => {
+                                    let day = 'default';
+                                    switch (true) {
+                                        case isSunday(d):
+                                            day = 'sunday'
+                                            break
+                                        case isSaturday(d):
+                                            day = 'saturday'
+                                            break
+                                    }
 
-                                return <th
-                                    key={i}
-                                    className={`c-th--${day}`}
-                                    title={`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}(${wday[d.getDay()]})`}
-                                >
-                                    {d.getDate()}
-                                </th>
-                            })}
-                        </tr>
-                    </thead>
+                                    return <th
+                                        key={i}
+                                        className={`c-th--${day}`}
+                                        title={`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}(${wday[d.getDay()]})`}
+                                    >
+                                        {d.getDate()}
+                                    </th>
+                                })}
+                            </tr>
+                        </thead>
 
-                    <tbody>
-                    {tasksD.map((t, i) => {
-                        const projectName = (master.project_id && master.project_id[t.project_id]) || `Project ${t.project_id}`;
-                        const pre = Math.max(0, dayIndex(t._start));
-                        const span = Math.max(1, dayIndex(t._end) - dayIndex(t._start) + 1);
-                        const post = Math.max(0, days.length - pre - span);
-                        const title = `${projectName}: ${t.name}`;
+                        <tbody>
+                        {tasksD.map((t, i) => {
+                            const projectName = (master.project_id && master.project_id[t.project_id]) || `Project ${t.project_id}`;
+                            const pre = Math.max(0, dayIndex(t._start));
+                            const span = Math.max(1, dayIndex(t._end) - dayIndex(t._start) + 1);
+                            const post = Math.max(0, days.length - pre - span);
+                            const title = `${projectName}: ${t.name}`;
 
-                        return (
-                        <tr key={i}>
-                            {/* 余白 */}
-                            {pre > 0 && <td colSpan={pre}></td>}
+                            return (
+                            <tr key={i}>
+                                {/* 余白 */}
+                                {pre > 0 && <td colSpan={pre}></td>}
 
-                            <td colSpan={span}>
-                                <div className='wbs__title'>{`${title}`}</div>
-                                <div className={`wbs__bar status-${t.task_status}`}>
-                                    <div className='wbs__bar__fill' style={{ width: `${t.complete_ratio}%` }} />
-                                </div>
-                            </td>
+                                <td colSpan={span}>
+                                    <div className='wbs__title'>{`${title}`}</div>
+                                    <div className={`wbs__bar status-${t.task_status}`}>
+                                        <div className='wbs__bar__fill' style={{ width: `${t.complete_ratio}%` }} />
+                                    </div>
+                                </td>
 
-                            {/* 余白 */}
-                            {post > 0 && <td className='' colSpan={post}></td>}
-                        </tr>
-                        );
-                    })}
-                    </tbody>
-                </table>
+                                {/* 余白 */}
+                                {post > 0 && <td className='' colSpan={post}></td>}
+                            </tr>
+                            );
+                        })}
+                        </tbody>
+                    </table>
                 </div>
             </section>
 
@@ -137,40 +137,40 @@ export default function Page() {
             <section className='p-app__section'>
                 <h2 className='p-app__section__title'>タスク一覧</h2>
                 <div className='p-app__section__main task'>
-                <table>
-                    <thead>
-                    <tr>
-                        {column.map(({ id, name }) => <th key={id}>{name}</th>)}
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {tasks.length > 0 && tasks.map((t, i) => {
-                        const project = master.project_id[t.project_id];
-                        const isFirst = !shownProjects.has(t.project_id);
-                        if (isFirst) shownProjects.add(t.project_id);
+                    <table className='c-table'>
+                        <thead>
+                        <tr>
+                            {column.map(({ id, name }) => <th key={id}>{name}</th>)}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {tasks.length > 0 && tasks.map((t, i) => {
+                            const project = master.project_id[t.project_id];
+                            const isFirst = !shownProjects.has(t.project_id);
+                            if (isFirst) shownProjects.add(t.project_id);
 
-                        return (
-                        <React.Fragment key={`${t.project_id}-${t.name}-${i}`}>
-                            {isFirst && (
-                            <tr>
-                                <td className='c-td--parent'>{project}</td>
-                                {column.map(({ id, label }) =>
-                                label !== 'name' ? <td key={id} className='c-td--parent'></td> : null
+                            return (
+                            <React.Fragment key={`${t.project_id}-${t.name}-${i}`}>
+                                {isFirst && (
+                                <tr>
+                                    <td className='c-td--parent'>{project}</td>
+                                    {column.map(({ id, label }) =>
+                                    label !== 'name' ? <td key={id} className='c-td--parent'></td> : null
+                                    )}
+                                </tr>
                                 )}
-                            </tr>
-                            )}
-                            <tr>
-                            {column.map(({ id, label, type }) => {
-                                if (t[label] === undefined || t[label] === null) return <td key={id}></td>;
-                                const value = getVal(t[label], label, type);
-                                return <td key={id} className={`c-td--${type} c-td--child`}>{value}</td>;
-                            })}
-                            </tr>
-                        </React.Fragment>
-                        );
-                    })}
-                    </tbody>
-                </table>
+                                <tr>
+                                {column.map(({ id, label, type }) => {
+                                    if (t[label] === undefined || t[label] === null) return <td key={id}></td>;
+                                    const value = getVal(t[label], label, type);
+                                    return <td key={id} className={`c-td--${type} c-td--child`}>{value}</td>;
+                                })}
+                                </tr>
+                            </React.Fragment>
+                            );
+                        })}
+                        </tbody>
+                    </table>
                 </div>
             </section>
         </main>
