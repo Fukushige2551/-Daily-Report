@@ -8,9 +8,9 @@ export default function Page() {
     /** data */
     const tasks = [
         { project_id: 1, name: '要件定義',     complete_ratio: 100, task_status: 3, start_date: '2025-10-1',  end_date: '2025-10-7',  time: '40' },
-        { project_id: 1, name: '見積もり作成', complete_ratio: 80,  task_status: 1, start_date: '2025-10-7',  end_date: '2025-10-10', time: '24' },
+        { project_id: 1, name: '見積もり作成', complete_ratio: 80,  task_status: 2, start_date: '2025-10-7',  end_date: '2025-10-10', time: '24' },
         { project_id: 1, name: 'スケジュール作成', complete_ratio: 0, task_status: 1, start_date: '2025-10-10', end_date: '2025-10-12', time: '16' },
-        { project_id: 2, name: '要件定義',     complete_ratio: 40, task_status: 1, start_date: '2025-10-7',  end_date: '2025-10-14', time: '40' },
+        { project_id: 2, name: '要件定義',     complete_ratio: 40, task_status: 2, start_date: '2025-10-7',  end_date: '2025-10-14', time: '40' },
         { project_id: 2, name: '見積もり作成', complete_ratio: 0, task_status: 1, start_date: '2025-10-14', end_date: '2025-10-17', time: '24' },
         { project_id: 3, name: '要件定義',     complete_ratio: 20,  task_status: 1, start_date: '2025-10-8',  end_date: '2025-10-18',  time: '48' },
         { project_id: 3, name: '見積もり作成',     complete_ratio: 0,  task_status: 1, start_date: '2025-10-18',  end_date: '2025-10-21',  time: '48' },
