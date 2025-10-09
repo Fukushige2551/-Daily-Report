@@ -2,4 +2,11 @@
 .c-table {
     min-width: 1000px;
     table-layout: fixed;
+    word-break: break-all;
+}
+
+c-th {
+    &--number {
+        // width: 40px;
+    }
 }

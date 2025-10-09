@@ -5,29 +5,117 @@ import { getVal } from '@/js/display';
 import { master } from '@/js/master';
 
 export default function Page() {
-  /** data */
-  const tasks = [
-    { project_id: 1, name: '要件定義',     complete_ratio: 100, task_status: 3, start_date: '2025-10-1',  end_date: '2025-10-7',  time: '40' },
-    { project_id: 1, name: '見積もり作成', complete_ratio: 80,  task_status: 1, start_date: '2025-10-7',  end_date: '2025-10-10', time: '24' },
-    { project_id: 1, name: 'スケジュール作成', complete_ratio: 0, task_status: 1, start_date: '2025-10-10', end_date: '2025-10-12', time: '16' },
-    { project_id: 2, name: '要件定義',     complete_ratio: 40, task_status: 1, start_date: '2025-10-7',  end_date: '2025-10-14', time: '40' },
-    { project_id: 2, name: '見積もり作成', complete_ratio: 0, task_status: 1, start_date: '2025-10-14', end_date: '2025-10-17', time: '24' },
-    { project_id: 3, name: '要件定義',     complete_ratio: 20,  task_status: 1, start_date: '2025-10-8',  end_date: '2025-10-18', time: '48' },
-    { project_id: 3, name: '見積もり作成', complete_ratio: 0,  task_status: 1, start_date: '2025-10-30', end_date: '2025-11-03', time: '48' }, // ※11月にまたがる例
+  /** 初期データ（固定） */
+  const initialTasks = [
+    { id: 1, project_id: 1, name: '要件定義',     complete_ratio: 100, task_status: 3, start_date: '2025-10-1',  end_date: '2025-10-3',  time: '40' },
+    { id: 2, project_id: 1, name: '見積もり作成', complete_ratio: 80,  task_status: 1, start_date: '2025-10-7',  end_date: '2025-10-12', time: '24' },
+    { id: 3, project_id: 1, name: 'スケジュール作成', complete_ratio: 0, task_status: 1, start_date: '2025-10-10', end_date: '2025-10-12', time: '16' },
+    { id: 4, project_id: 2, name: '要件定義',     complete_ratio: 40, task_status: 1, start_date: '2025-10-7',  end_date: '2025-10-14', time: '40' },
+    { id: 5, project_id: 2, name: '見積もり作成', complete_ratio: 0, task_status: 1, start_date: '2025-10-14', end_date: '2025-10-17', time: '24' },
+    { id: 6, project_id: 3, name: '要件定義',     complete_ratio: 20, task_status: 1, start_date: '2025-10-8',  end_date: '2025-10-18', time: '48' },
+    { id: 7, project_id: 3, name: '見積もり作成', complete_ratio: 0,  task_status: 1, start_date: '2025-10-18', end_date: '2025-11-03', time: '48' },
   ];
 
+  /** 表示カラム定義 */
   const column = [
-    { id: 1, label: 'name',           name: 'タスク名', type: 'text'   },
-    { id: 2, label: 'complete_ratio', name: '進捗率',   type: 'number' },
-    { id: 3, label: 'task_status',    name: '状態',     type: 'id'     },
-    { id: 4, label: 'start_date',     name: '開始日',   type: 'date'   },
-    { id: 5, label: 'end_date',       name: '終了日',   type: 'date'   },
-    { id: 6, label: 'time',           name: '工数',     type: 'number' },
+    { id: 1,  label: 'name',           name: 'タスク名', type: 'text'   },
+    { id: 10, label: 'project_id',     name: 'プロジェクトID', type: 'id' },
+    { id: 2,  label: 'complete_ratio', name: '進捗率(%)',   type: 'number' },
+    { id: 3,  label: 'task_status',    name: '状態ID',     type: 'id' },
+    { id: 4,  label: 'start_date',     name: '開始日',     type: 'date'   },
+    { id: 5,  label: 'end_date',       name: '終了日',     type: 'date'   },
+    { id: 6,  label: 'time',           name: '工数(h)',    type: 'number' },
   ];
 
-  /** ---------- util ---------- */
+  /** ========= ここから 編集・追加 機能 ========= */
+  const [tasks, setTasks] = useState(initialTasks);
+  const [editingId, setEditingId] = useState(null);
+
+  // --- テーブル追加用のドラフト行 ---
+  const blankDraft = () => ({
+    project_id: 1,
+    name: '',
+    complete_ratio: 0,
+    task_status: 1,
+    start_date: '',
+    end_date: '',
+    time: '',
+    __tmpid: crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2),
+  });
+  const [draftRows, setDraftRows] = useState([blankDraft()]);
+
+  const toNumOr = (v, fallback = 0) => {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : fallback;
+  };
+
+  const sanitizeTask = (t) => ({
+    ...t,
+    project_id: toNumOr(t.project_id, 1),
+    complete_ratio: Math.max(0, Math.min(100, toNumOr(t.complete_ratio, 0))),
+    task_status: toNumOr(t.task_status, 1),
+    time: String(t.time ?? '').trim(), // 工数は文字列維持
+  });
+
+  // 既存行編集
+  const startEdit = (id) => setEditingId(id);
+  const cancelEdit = () => setEditingId(null);
+  const onChangeEdit = (id, key, value) => {
+    setTasks(prev => prev.map(t => t.id === id ? { ...t, [key]: value } : t));
+  };
+  const saveEdit = (id) => {
+    const target = tasks.find(t => t.id === id);
+    if (!target) return;
+    if (!target.name?.trim()) return alert('タスク名を入力してね');
+    if (!target.start_date || !target.end_date) return alert('開始日と終了日を入れてね');
+    if (new Date(target.start_date) > new Date(target.end_date)) return alert('開始日は終了日以前にしてね');
+    setTasks(prev => prev.map(t => t.id === id ? sanitizeTask(t) : t));
+    setEditingId(null);
+  };
+  const deleteTask = (id) => {
+    if (!confirm('このタスクを削除する？')) return;
+    setTasks(prev => prev.filter(t => t.id !== id));
+  };
+
+  // 追加テーブルの行操作
+  const addDraftRow = () => setDraftRows(prev => [...prev, blankDraft()]);
+  const removeDraftRow = (tmpid) => {
+    setDraftRows(prev => (prev.length <= 1 ? [blankDraft()] : prev.filter(r => r.__tmpid !== tmpid)));
+  };
+  const onChangeDraft = (tmpid, key, value) => {
+    setDraftRows(prev => prev.map(r => r.__tmpid === tmpid ? { ...r, [key]: value } : r));
+  };
+
+  const commitDraftRows = () => {
+    // バリデーション
+    const errs = [];
+    draftRows.forEach((r, idx) => {
+      if (!r.name?.trim()) errs.push(`${idx + 1}行目: タスク名`);
+      if (!r.start_date)   errs.push(`${idx + 1}行目: 開始日`);
+      if (!r.end_date)     errs.push(`${idx + 1}行目: 終了日`);
+      if (r.start_date && r.end_date && new Date(r.start_date) > new Date(r.end_date)) {
+        errs.push(`${idx + 1}行目: 開始日は終了日以前`);
+      }
+    });
+    if (errs.length) {
+      alert('入力を確認してね：\n' + errs.join('\n'));
+      return;
+    }
+
+    // ID採番
+    let maxId = tasks.length ? Math.max(...tasks.map(t => t.id)) : 0;
+    const newOnes = draftRows.map(r => sanitizeTask({ ...r, id: ++maxId }));
+    setTasks(prev => [...prev, ...newOnes]);
+
+    // クリア
+    setDraftRows([blankDraft()]);
+    alert('追加したよ！');
+  };
+  /** ========= 編集・追加 機能ここまで ========= */
+
+  /** ---------- util（ガント） ---------- */
   const parseDate = (s) => {
-    const [y, m, d] = s.split('-').map(Number);
+    const [y, m, d] = String(s).split('-').map(Number);
     return new Date(y, (m || 1) - 1, d || 1);
   };
   const startOfMonth = (date) => new Date(date.getFullYear(), date.getMonth(), 1);
@@ -36,20 +124,20 @@ export default function Page() {
 
   const tasksD = useMemo(() => tasks.map(t => ({
     ...t,
-    _start: parseDate(t.start_date),
-    _end: parseDate(t.end_date),
+    _start: t.start_date ? parseDate(t.start_date) : null,
+    _end:   t.end_date   ? parseDate(t.end_date)   : null,
   })), [tasks]);
 
-  // 初期表示月＝最も早い開始日を含む月
   const initialMonthStart = useMemo(() => {
-    const rawMin = new Date(Math.min(...tasksD.map(t => t._start.getTime())));
+    const withStart = tasksD.filter(t => t._start);
+    if (withStart.length === 0) return startOfMonth(new Date());
+    const rawMin = new Date(Math.min(...withStart.map(t => t._start.getTime())));
     return startOfMonth(rawMin);
   }, [tasksD]);
 
   const [viewStart, setViewStart] = useState(initialMonthStart);
   const viewEnd = useMemo(() => endOfMonth(viewStart), [viewStart]);
 
-  // その月の日付配列（両端含む）
   const days = useMemo(() => {
     const list = [];
     for (let d = new Date(viewStart); d <= viewEnd; d.setDate(d.getDate() + 1)) {
@@ -61,20 +149,23 @@ export default function Page() {
   const dayIndex = (date) =>
     Math.floor((date.getTime() - viewStart.getTime()) / (24 * 60 * 60 * 1000));
 
-  // 月ヘッダ（1か月固定だけど拡張しやすい形で）
   const monthGroups = useMemo(() => {
-    return [{ key: `${viewStart.getFullYear()}-${viewStart.getMonth() + 1}`, label: `${viewStart.getFullYear()}/${String(viewStart.getMonth() + 1).padStart(2, '0')}`, span: days.length }];
+    return [{
+      key: `${viewStart.getFullYear()}-${viewStart.getMonth() + 1}`,
+      label: `${viewStart.getFullYear()}/${String(viewStart.getMonth() + 1).padStart(2, '0')}`,
+      span: days.length
+    }];
   }, [viewStart, days.length]);
 
   const wday = ['日','月','火','水','木','金','土'];
   const isSunday = (d) => d.getDay() === 0;
   const isSaturday = (d) => d.getDay() === 6;
 
-  // その月に「かかっている」タスクだけ抽出＆クランプ（ガント描画用）
   const visibleTasks = useMemo(() => {
     return tasksD
       .map(t => {
-        if (t._end < viewStart || t._start > viewEnd) return null; // 完全に月外
+        if (!t._start || !t._end) return null;
+        if (t._end < viewStart || t._start > viewEnd) return null;
         const clampedStart = t._start < viewStart ? viewStart : t._start;
         const clampedEnd   = t._end   > viewEnd   ? viewEnd   : t._end;
         return { ...t, _startV: clampedStart, _endV: clampedEnd };
@@ -82,27 +173,20 @@ export default function Page() {
       .filter(Boolean);
   }, [tasksD, viewStart, viewEnd]);
 
-  // 一覧用も同じくその月にかかっているものだけ
   const listTasks = visibleTasks;
 
-  // 「次の月のデータを取る」= ページングAPIを想定した取得フック
-  // ここではサンプルとしてローカルtasksからその月のタスクを返す。
-  // 実APIとつなぐ場合は fetch(...) に差し替えればOK。
+  // ページング（次の月のデータ取得フック）
   const getMonthData = async (date) => {
     const monthStart = startOfMonth(date);
     const monthEnd = endOfMonth(date);
-    const data = tasksD.filter(t => !(t._end < monthStart || t._start > monthEnd));
-    // ここで実APIならレスポンスをreturn
+    const data = tasksD.filter(t => t._start && t._end && !(t._end < monthStart || t._start > monthEnd));
     return data;
   };
-
   const handlePrev = async () => {
     const nextStart = addMonths(viewStart, -1);
     setViewStart(nextStart);
-    // 取得例（使い道があれば state に保存してもOK）
     await getMonthData(nextStart);
   };
-
   const handleNext = async () => {
     const nextStart = addMonths(viewStart, 1);
     setViewStart(nextStart);
@@ -113,14 +197,14 @@ export default function Page() {
     <main className='p-app'>
       <h1>Dashboard</h1>
 
-      {/* コントロール */}
-      <div className='wbs__controls' style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}>
+      {/* 月ページング */}
+      <div className='wbs__controls' style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: 12 }}>
         <button type='button' onClick={handlePrev} aria-label='前の月へ'>← 前の月</button>
         <div>{viewStart.getFullYear()}年 {String(viewStart.getMonth() + 1).padStart(2,'0')}月</div>
         <button type='button' onClick={handleNext} aria-label='次の月へ'>次の月 →</button>
       </div>
 
-      {/* ガントチャート（その月1か月分だけ） */}
+      {/* ガントチャート */}
       <section className='p-app__section'>
         <h2 className='p-app__section__title'>ガントチャート</h2>
         <div className='p-app__section__main wbs'>
@@ -135,7 +219,7 @@ export default function Page() {
                 {days.map((d, i) => {
                   let day = 'default';
                   switch (true) {
-                    case isSunday(d): day = 'sunday';   break;
+                    case isSunday(d): day = 'sunday'; break;
                     case isSaturday(d): day = 'saturday'; break;
                   }
                   return (
@@ -158,23 +242,20 @@ export default function Page() {
 
               {visibleTasks.map((t, i) => {
                 const projectName = (master.project_id && master.project_id[t.project_id]) || `Project ${t.project_id}`;
-
                 const pre  = Math.max(0, dayIndex(t._startV));
                 const span = Math.max(1, dayIndex(t._endV) - dayIndex(t._startV) + 1);
                 const post = Math.max(0, days.length - pre - span);
-                const title = `${projectName}: ${t.name}`;
+                const title = `【${projectName}】${t.name}`;
 
                 return (
                   <tr key={i}>
                     {pre > 0 && <td colSpan={pre}></td>}
-
                     <td colSpan={span}>
                       <div className='wbs__title'>{title}</div>
                       <div className={`wbs__bar status-${t.task_status}`}>
                         <div className='wbs__bar__fill' style={{ width: `${t.complete_ratio}%` }} />
                       </div>
                     </td>
-
                     {post > 0 && <td colSpan={post}></td>}
                   </tr>
                 );
@@ -184,14 +265,53 @@ export default function Page() {
         </div>
       </section>
 
-      {/* タスク一覧（その月にかかるものだけ） */}
+      {/* 追加テーブル（複数行をまとめて追加） */}
+      <section className='p-app__section'>
+        <h2 className='p-app__section__title'>タスク追加（テーブル）</h2>
+        <div className='p-app__section__main add'>
+          <div>
+            <button type='button' onClick={addDraftRow}>+ 追加</button>
+            <button type='button' onClick={commitDraftRows}>+ 登録</button>
+          </div>
+
+          <table className='c-table'>
+            <thead>
+              <tr>
+                {column.map(({ id, name }) => <th key={id}>{name}</th>)}
+                <th>行操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              {draftRows.map((r) => (
+                <tr key={r.__tmpid}>
+                  {column.map(({ id, label, type }) => (
+                    <td key={id}>
+                      <input
+                        type={type === 'number' ? 'number' : type === 'date' ? 'date' : 'text'}
+                        value={String(r[label] ?? '')}
+                        onChange={e => onChangeDraft(r.__tmpid, label, e.target.value)}
+                      />
+                    </td>
+                  ))}
+                  <td>
+                    <button type='button' onClick={() => removeDraftRow(r.__tmpid)}>削除</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* タスク一覧（その月にかかるものだけ＆行ごとに編集） */}
       <section className='p-app__section'>
         <h2 className='p-app__section__title'>タスク一覧</h2>
         <div className='p-app__section__main task'>
           <table className='c-table'>
             <thead>
               <tr>
-                {column.map(({ id, name }) => <th key={id}>{name}</th>)}
+                {column.map(({ id, name, type }) => <th key={id} className={`c-th--${type}`}>{name}</th>)}
+                <th>操作</th>
               </tr>
             </thead>
             <tbody>
@@ -205,28 +325,55 @@ export default function Page() {
                     seen.add(t.project_id);
                     rows.push(
                       <tr key={`p-${t.project_id}`}>
-                        <td className='c-td--parent'>{project}</td>
-                        {column.map(({ id, label }) =>
-                          label !== 'name' ? <td key={id} className='c-td--parent'></td> : null
-                        )}
+                        <td className='c-td--parent' colSpan={column.length + 1}>{project}</td>
                       </tr>
                     );
                   }
+
+                  const isEditing = editingId === t.id;
+
                   rows.push(
                     <tr key={`${t.project_id}-${t.name}-${i}`}>
                       {column.map(({ id, label, type }) => {
-                        // 表示値は元データ（クランプはガントだけ）
-                        if (t[label] === undefined || t[label] === null) return <td key={id}></td>;
-                        const value = getVal(t[label], label, type);
-                        return <td key={id} className={`c-td--${type} c-td--child`}>{value}</td>;
+                        const raw = t[label];
+                        if (isEditing) {
+                          return (
+                            <td key={id}>
+                              <input
+                                type={type === 'number' ? 'number' : type === 'date' ? 'date' : 'text'}
+                                value={String(raw ?? '')}
+                                onChange={e => onChangeEdit(t.id, label, e.target.value)}
+                              />
+                            </td>
+                          );
+                        } else {
+                          if (raw === undefined || raw === null) return <td key={id}></td>;
+                          const value = getVal(raw, label, type);
+                          return <td key={id} className={`c-td--${type} c-td--child`}>{value}</td>;
+                        }
                       })}
+
+                      <td>
+                        {!isEditing ? (
+                          <>
+                            <button type='button' onClick={() => startEdit(t.id)}>編集</button>{' '}
+                            <button type='button' onClick={() => deleteTask(t.id)}>削除</button>
+                          </>
+                        ) : (
+                          <>
+                            <button type='button' onClick={() => saveEdit(t.id)}>保存</button>{' '}
+                            <button type='button' onClick={cancelEdit}>キャンセル</button>
+                          </>
+                        )}
+                      </td>
                     </tr>
                   );
                 });
+
                 if (rows.length === 0) {
                   return (
                     <tr>
-                      <td colSpan={column.length} style={{ textAlign: 'center' }}>
+                      <td colSpan={column.length + 1} style={{ textAlign: 'center' }}>
                         この月に該当するタスクはありません
                       </td>
                     </tr>
