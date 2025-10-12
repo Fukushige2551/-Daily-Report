@@ -8,9 +8,9 @@ export default function Page() {
   /** 初期データ（固定） */
   const initialTasks = [
     { id: 1, project_id: 1, name: '要件定義',     complete_ratio: 100, task_status: 3, start_date: '2025-10-1',  end_date: '2025-10-3',  time: '40' },
-    { id: 2, project_id: 1, name: '見積もり作成', complete_ratio: 80,  task_status: 1, start_date: '2025-10-7',  end_date: '2025-10-12', time: '24' },
+    { id: 2, project_id: 1, name: '見積もり作成', complete_ratio: 80,  task_status: 2, start_date: '2025-10-7',  end_date: '2025-10-12', time: '24' },
     { id: 3, project_id: 1, name: 'スケジュール作成', complete_ratio: 0, task_status: 1, start_date: '2025-10-10', end_date: '2025-10-12', time: '16' },
-    { id: 4, project_id: 2, name: '要件定義',     complete_ratio: 40, task_status: 1, start_date: '2025-10-7',  end_date: '2025-10-14', time: '40' },
+    { id: 4, project_id: 2, name: '要件定義',     complete_ratio: 40, task_status: 2, start_date: '2025-10-7',  end_date: '2025-10-14', time: '40' },
     { id: 5, project_id: 2, name: '見積もり作成', complete_ratio: 0, task_status: 1, start_date: '2025-10-14', end_date: '2025-10-17', time: '24' },
     { id: 6, project_id: 3, name: '要件定義',     complete_ratio: 20, task_status: 1, start_date: '2025-10-8',  end_date: '2025-10-18', time: '48' },
     { id: 7, project_id: 3, name: '見積もり作成', complete_ratio: 0,  task_status: 1, start_date: '2025-10-18', end_date: '2025-11-03', time: '48' },
@@ -66,14 +66,13 @@ export default function Page() {
   const saveEdit = (id) => {
     const target = tasks.find(t => t.id === id);
     if (!target) return;
-    if (!target.name?.trim()) return alert('タスク名を入力してね');
-    if (!target.start_date || !target.end_date) return alert('開始日と終了日を入れてね');
-    if (new Date(target.start_date) > new Date(target.end_date)) return alert('開始日は終了日以前にしてね');
+    if (!target.name?.trim()) return alert('タスク名を入力してください');
+    if (new Date(target.start_date) > new Date(target.end_date)) return alert('開始日は終了日以前にしてください');
     setTasks(prev => prev.map(t => t.id === id ? sanitizeTask(t) : t));
     setEditingId(null);
   };
   const deleteTask = (id) => {
-    if (!confirm('このタスクを削除する？')) return;
+    if (!confirm('このタスクを削除しますか？')) return;
     setTasks(prev => prev.filter(t => t.id !== id));
   };
 
@@ -98,7 +97,7 @@ export default function Page() {
       }
     });
     if (errs.length) {
-      alert('入力を確認してね：\n' + errs.join('\n'));
+      alert('入力を確認してください：\n' + errs.join('\n'));
       return;
     }
 
@@ -109,7 +108,7 @@ export default function Page() {
 
     // クリア
     setDraftRows([blankDraft()]);
-    alert('追加したよ！');
+    alert('追加しました');
   };
   /** ========= 編集・追加 機能ここまで ========= */
 
@@ -284,15 +283,31 @@ export default function Page() {
             <tbody>
               {draftRows.map((r) => (
                 <tr key={r.__tmpid}>
-                  {column.map(({ id, label, type }) => (
-                    <td key={id}>
-                      <input
-                        type={type === 'number' ? 'number' : type === 'date' ? 'date' : 'text'}
-                        value={String(r[label] ?? '')}
-                        onChange={e => onChangeDraft(r.__tmpid, label, e.target.value)}
-                      />
-                    </td>
-                  ))}
+                  {column.map(({ id, label, type }) => {
+                    switch (type) {
+                      case 'id':
+                        return <td key={id}>
+                          <select value={String(r[label] ?? 0)} onChange={e => onChangeDraft(r.__tmpid, label, e.target.value)}>
+                            {Object.values(master[label]).map((m, i) => {
+                              return <option
+                                key={i}
+                                value={i + 1}
+                              >
+                                {m}
+                              </option>
+                            })}
+                          </select>
+                        </td>
+                      default:
+                        return <td key={id}>
+                          <input
+                            type={type === 'number' ? 'number' : type === 'date' ? 'date' : 'text'}
+                            value={String(r[label] ?? '')}
+                            onChange={e => onChangeDraft(r.__tmpid, label, e.target.value)}
+                          />
+                        </td>
+                    }
+                  })}
                   <td>
                     <button type='button' onClick={() => removeDraftRow(r.__tmpid)}>削除</button>
                   </td>
