@@ -289,12 +289,7 @@ export default function Page() {
                         return <td key={id}>
                           <select value={String(r[label] ?? 0)} onChange={e => onChangeDraft(r.__tmpid, label, e.target.value)}>
                             {Object.values(master[label]).map((m, i) => {
-                              return <option
-                                key={i}
-                                value={i + 1}
-                              >
-                                {m}
-                              </option>
+                              return <option key={i} value={i + 1}>{m}</option>
                             })}
                           </select>
                         </td>
@@ -352,16 +347,26 @@ export default function Page() {
                       {column.map(({ id, label, type }) => {
                         const raw = t[label];
                         if (isEditing) {
-                          return (
-                            <td key={id}>
-                              <input
-                                type={type === 'number' ? 'number' : type === 'date' ? 'date' : 'text'}
-                                value={String(raw ?? '')}
-                                onChange={e => onChangeEdit(t.id, label, e.target.value)}
-                              />
-                            </td>
-                          );
-                        } else {
+                          switch (type) {
+                            case 'id':
+                              return <td key={id}>
+                                <select value={String(raw ?? 0)} onChange={e => onChangeEdit(t.id, label, e.target.value)}>
+                                  {Object.values(master[label]).map((m, i) => {
+                                    return <option key={id} value={i + 1}>{m}</option>
+                                  })}
+                                </select>
+                              </td>
+                            default:
+                              return <td key={id}>
+                                <input
+                                  type={type === 'number' ? 'number' : type === 'date' ? 'date' : 'text'}
+                                  value={String(raw ?? '')}
+                                  onChange={e => onChangeEdit(t.id, label, e.target.value)}
+                                />
+                              </td>
+                          }
+                        }
+                        else {
                           if (raw === undefined || raw === null) return <td key={id}></td>;
                           const value = getVal(raw, label, type);
                           return <td key={id} className={`c-td--${type} c-td--child`}>{value}</td>;
