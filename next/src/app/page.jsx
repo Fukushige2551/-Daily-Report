@@ -172,6 +172,41 @@ export default function Page() {
       .filter(Boolean);
   }, [tasksD, viewStart, viewEnd]);
 
+  // === 追加: ガント用にプロジェクトごとへグルーピング & 並び替え ===
+  const ganttGroups = useMemo(() => {
+    const map = new Map();
+    visibleTasks.forEach(t => {
+      const pid = t.project_id;
+      if (!map.has(pid)) map.set(pid, []);
+      map.get(pid).push(t);
+    });
+    const entries = [...map.entries()].sort((a, b) => a[0] - b[0]); // project_id昇順
+    entries.forEach(([_, arr]) => {
+      arr.sort((a, b) => (a._startV - b._startV) || (a.id - b.id));
+    });
+    return entries; // [ [project_id, Task[]], ... ]
+  }, [visibleTasks]);
+
+  // === 追加: 一覧用（当月表示のタスク）をプロジェクトごとにグルーピング ===
+  const listGroups = useMemo(() => {
+    const map = new Map();
+    visibleTasks.forEach(t => {
+      const pid = t.project_id;
+      if (!map.has(pid)) map.set(pid, []);
+      map.get(pid).push(t);
+    });
+    // プロジェクト昇順、プロジェクト内は開始日→IDでソート
+    const entries = [...map.entries()].sort((a, b) => a[0] - b[0]);
+    entries.forEach(([_, arr]) => {
+      arr.sort((a, b) => {
+        const aStart = a._startV?.getTime() ?? 0;
+        const bStart = b._startV?.getTime() ?? 0;
+        return (aStart - bStart) || (a.id - b.id);
+      });
+    });
+    return entries; // [ [project_id, Task[]], ... ]
+  }, [visibleTasks]);
+
   const listTasks = visibleTasks;
 
   // ページング（次の月のデータ取得フック）
@@ -203,7 +238,7 @@ export default function Page() {
         <button type='button' onClick={handleNext} aria-label='次の月へ'>次の月 →</button>
       </div>
 
-      {/* ガントチャート */}
+      {/* ガントチャート（プロジェクトごと） */}
       <section className='p-app__section'>
         <h2 className='p-app__section__title'>ガントチャート</h2>
         <div className='p-app__section__main wbs'>
@@ -235,28 +270,38 @@ export default function Page() {
             </thead>
 
             <tbody>
-              {visibleTasks.length === 0 && (
+              {ganttGroups.length === 0 && (
                 <tr><td colSpan={days.length} style={{ textAlign: 'center' }}>この月に該当するタスクはありません</td></tr>
               )}
 
-              {visibleTasks.map((t, i) => {
-                const projectName = (master.project_id && master.project_id[t.project_id]) || `Project ${t.project_id}`;
-                const pre  = Math.max(0, dayIndex(t._startV));
-                const span = Math.max(1, dayIndex(t._endV) - dayIndex(t._startV) + 1);
-                const post = Math.max(0, days.length - pre - span);
-                const title = `【${projectName}】${t.name}`;
-
+              {ganttGroups.map(([pid, arr]) => {
+                const projectName = master.project_id?.[pid] ?? `Project ${pid}`;
                 return (
-                  <tr key={i}>
-                    {pre > 0 && <td colSpan={pre}></td>}
-                    <td colSpan={span}>
-                      <div className='wbs__title'>{title}</div>
-                      <div className={`wbs__bar status-${t.task_status}`}>
-                        <div className='wbs__bar__fill' style={{ width: `${t.complete_ratio}%` }} />
-                      </div>
-                    </td>
-                    {post > 0 && <td colSpan={post}></td>}
-                  </tr>
+                  <React.Fragment key={`g-${pid}`}>
+                    {/* プロジェクト見出し行 */}
+                    <tr>
+                      <td className='c-td--parent' colSpan={days.length}>{projectName}</td>
+                    </tr>
+                    {/* プロジェクト内タスク行 */}
+                    {arr.map((t, i) => {
+                      const pre  = Math.max(0, dayIndex(t._startV));
+                      const span = Math.max(1, dayIndex(t._endV) - dayIndex(t._startV) + 1);
+                      const post = Math.max(0, days.length - pre - span);
+                      const title = `【${projectName}】${t.name}`;
+                      return (
+                        <tr key={`g-${pid}-${t.id}-${i}`}>
+                          {pre > 0 && <td colSpan={pre}></td>}
+                          <td colSpan={span}>
+                            <div className='wbs__title'>{title}</div>
+                            <div className={`wbs__bar status-${t.task_status}`}>
+                              <div className='wbs__bar__fill' style={{ width: `${t.complete_ratio}%` }} />
+                            </div>
+                          </td>
+                          {post > 0 && <td colSpan={post}></td>}
+                        </tr>
+                      );
+                    })}
+                  </React.Fragment>
                 );
               })}
             </tbody>
@@ -289,7 +334,7 @@ export default function Page() {
                         return <td key={id}>
                           <select value={String(r[label] ?? 0)} onChange={e => onChangeDraft(r.__tmpid, label, e.target.value)}>
                             {Object.values(master[label]).map((m, i) => {
-                              return <option key={i} value={i + 1}>{m}</option>
+                              return <option key={`${label}-${i}`} value={i + 1}>{m}</option>
                             })}
                           </select>
                         </td>
@@ -325,82 +370,81 @@ export default function Page() {
               </tr>
             </thead>
             <tbody>
-              {(() => {
-                const rows = [];
-                const seen = new Set();
-                listTasks.forEach((t, i) => {
-                  const project = master.project_id?.[t.project_id] ?? `Project ${t.project_id}`;
-                  const isFirst = !seen.has(t.project_id);
-                  if (isFirst) {
-                    seen.add(t.project_id);
-                    rows.push(
-                      <tr key={`p-${t.project_id}`}>
-                        <td className='c-td--parent' colSpan={column.length + 1}>{project}</td>
-                      </tr>
-                    );
-                  }
+              {listGroups.length === 0 && (
+                <tr>
+                  <td colSpan={column.length + 1} style={{ textAlign: 'center' }}>
+                    この月に該当するタスクはありません
+                  </td>
+                </tr>
+              )}
 
-                  const isEditing = editingId === t.id;
-
-                  rows.push(
-                    <tr key={`${t.project_id}-${t.name}-${i}`}>
-                      {column.map(({ id, label, type }) => {
-                        const raw = t[label];
-                        if (isEditing) {
-                          switch (type) {
-                            case 'id':
-                              return <td key={id}>
-                                <select value={String(raw ?? 0)} onChange={e => onChangeEdit(t.id, label, e.target.value)}>
-                                  {Object.values(master[label]).map((m, i) => {
-                                    return <option key={id} value={i + 1}>{m}</option>
-                                  })}
-                                </select>
-                              </td>
-                            default:
-                              return <td key={id}>
-                                <input
-                                  type={type === 'number' ? 'number' : type === 'date' ? 'date' : 'text'}
-                                  value={String(raw ?? '')}
-                                  onChange={e => onChangeEdit(t.id, label, e.target.value)}
-                                />
-                              </td>
-                          }
-                        }
-                        else {
-                          if (raw === undefined || raw === null) return <td key={id}></td>;
-                          const value = getVal(raw, label, type);
-                          return <td key={id} className={`c-td--${type} c-td--child`}>{value}</td>;
-                        }
-                      })}
-
-                      <td>
-                        {!isEditing ? (
-                          <>
-                            <button type='button' onClick={() => startEdit(t.id)}>編集</button>{' '}
-                            <button type='button' onClick={() => deleteTask(t.id)}>削除</button>
-                          </>
-                        ) : (
-                          <>
-                            <button type='button' onClick={() => saveEdit(t.id)}>保存</button>{' '}
-                            <button type='button' onClick={cancelEdit}>キャンセル</button>
-                          </>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                });
-
-                if (rows.length === 0) {
-                  return (
+              {listGroups.map(([pid, arr]) => {
+                const projectName = master.project_id?.[pid] ?? `Project ${pid}`;
+                return (
+                  <React.Fragment key={`list-${pid}`}>
+                    {/* プロジェクト見出し行 */}
                     <tr>
-                      <td colSpan={column.length + 1} style={{ textAlign: 'center' }}>
-                        この月に該当するタスクはありません
-                      </td>
+                      <td className='c-td--parent' colSpan={column.length + 1}>{projectName}</td>
                     </tr>
-                  );
-                }
-                return rows;
-              })()}
+
+                    {/* プロジェクト配下タスク */}
+                    {arr.map((t, i) => {
+                      const isEditing = editingId === t.id;
+                      return (
+                        <tr key={`row-${pid}-${t.id}-${i}`}>
+                          {column.map(({ id, label, type }) => {
+                            const raw = t[label];
+                            if (isEditing) {
+                              switch (type) {
+                                case 'id':
+                                  return (
+                                    <td key={id}>
+                                      <select
+                                        value={String(raw ?? 0)}
+                                        onChange={e => onChangeEdit(t.id, label, e.target.value)}
+                                      >
+                                        {Object.values(master[label]).map((m, idx) => (
+                                          <option key={`${label}-${idx}`} value={idx + 1}>{m}</option>
+                                        ))}
+                                      </select>
+                                    </td>
+                                  );
+                                default:
+                                  return (
+                                    <td key={id}>
+                                      <input
+                                        type={type === 'number' ? 'number' : type === 'date' ? 'date' : 'text'}
+                                        value={String(raw ?? '')}
+                                        onChange={e => onChangeEdit(t.id, label, e.target.value)}
+                                      />
+                                    </td>
+                                  );
+                              }
+                            } else {
+                              if (raw === undefined || raw === null) return <td key={id}></td>;
+                              const value = getVal(raw, label, type);
+                              return <td key={id} className={`c-td--${type} c-td--child`}>{value}</td>;
+                            }
+                          })}
+                          <td>
+                            {!isEditing ? (
+                              <>
+                                <button type='button' onClick={() => startEdit(t.id)}>編集</button>{' '}
+                                <button type='button' onClick={() => deleteTask(t.id)}>削除</button>
+                              </>
+                            ) : (
+                              <>
+                                <button type='button' onClick={() => saveEdit(t.id)}>保存</button>{' '}
+                                <button type='button' onClick={cancelEdit}>キャンセル</button>
+                              </>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </React.Fragment>
+                );
+              })}
             </tbody>
           </table>
         </div>
