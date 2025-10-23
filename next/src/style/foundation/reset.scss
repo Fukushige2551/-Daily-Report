@@ -150,16 +150,16 @@ button,
 }
 
 /* クリックしやすいように最低タップ領域（設計で上書き可） */
-button,
-[role="button"],
-input[type="checkbox"],
-input[type="radio"],
-input[type="range"],
-select,
-textarea {
-    min-inline-size: 44px;
-    min-block-size: 44px;
-}
+// button,
+// [role="button"],
+// input[type="checkbox"],
+// input[type="radio"],
+// input[type="range"],
+// select,
+// textarea {
+//     min-inline-size: 44px;
+//     min-block-size: 44px;
+// }
 
 /* buttonの初期値を素（余白は設計側で） */
 button {

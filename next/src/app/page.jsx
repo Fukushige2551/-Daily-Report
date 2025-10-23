@@ -3,6 +3,7 @@ import React, { useMemo, useState } from 'react';
 import '../style/app/page.scss';
 import { getVal } from '@/js/display';
 import { master } from '@/js/master';
+import { Modal } from './modal';
 
 export default function Page() {
   /** 初期データ（固定） */
@@ -30,6 +31,7 @@ export default function Page() {
   /** ========= ここから 編集・追加 機能 ========= */
   const [tasks, setTasks] = useState(initialTasks);
   const [editingId, setEditingId] = useState(null);
+  const [modal, setModal] = useState(false);
 
   // --- テーブル追加用のドラフト行 ---
   const blankDraft = () => ({
@@ -229,7 +231,10 @@ export default function Page() {
 
   return (
     <main className='p-app'>
-      <h1>Dashboard</h1>
+      <div className='p-app__top'>
+        <h1>Dashboard</h1>
+        <button className='c-btn' onClick={() => setModal(true)}>日報作成</button>
+      </div>
 
       {/* 月ページング */}
       <div className='wbs__controls' style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: 12 }}>
@@ -266,6 +271,7 @@ export default function Page() {
                     </th>
                   );
                 })}
+                
               </tr>
             </thead>
 
@@ -449,6 +455,8 @@ export default function Page() {
           </table>
         </div>
       </section>
+
+      {modal && <Modal setModal={setModal} />}
     </main>
   );
 }
