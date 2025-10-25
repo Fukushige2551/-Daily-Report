@@ -1,67 +1,42 @@
-/* ===============================
-	reset.scss（2025 きほんりせっと）
-	- なるべく “すなお” にそろえる
-	- sp（もばいる）ふぁーすと
-	- ろんりぷろぱてぃ／あくせしびりてぃ重視
-    =============================== */
-
-/* --------------------------------
-    おこのみ変数
------------------------------------ */
-$focus-ring-color: #2684ff !default;    // ふぉーかすりんぐの色
+// focus-ring
+$focus-ring-color: #2684ff !default;
 $focus-ring-width: 2px !default;
 
-/* --------------------------------
-    さいしょの土台
------------------------------------ */
 :root {
-    /* iOSのずれ防止 */
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-
-    /* OSの配色になじむ（formの暗色対応など） */
     color-scheme: light dark;
-
-    /* てきすと関連のよみやすさ */
-    line-height: 1.5;
     hanging-punctuation: first last;
     text-rendering: optimizeLegibility;
-    /* ことばのおりかた（対応ぶん） */
     text-wrap: pretty;
 }
 
-/* ぼっくすの基準を全要素に */
 *, *::before, *::after {
     box-sizing: border-box;
 }
 
-/* 既定の余白をぜんぶ消す */
 * {
     margin: 0;
 }
 
-/* びゅーぽーとに素直にひろがる */
 html, body {
     min-block-size: 100%;
 }
 
-/* 本文の基本 */
 body {
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans",
                 "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji",
                 "Noto Color Emoji", sans-serif;
-    font-size: 16px;                /* spふぁーすとの基準 */
+    font-size: 16px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
     text-size-adjust: 100%;
-    /* ことばがはみ出すときの保険 */
     overflow-wrap: anywhere;
     background-color: Canvas;
     color: CanvasText;
     scrollbar-gutter: stable both-edges;
 }
 
-/* りんく：色は継承して下線は見やすく */
 a {
     color: inherit;
     text-decoration-thickness: from-font;
@@ -69,58 +44,48 @@ a {
     text-decoration-skip-ink: auto;
 }
 
-/* 画像・動画などは行内におさまりやすく */
 img, picture, video, canvas, svg {
     display: block;
     max-inline-size: 100%;
     block-size: auto;
 }
 
-/* 画像ののび縮みでぼけないように */
 img {
     image-rendering: auto;
 }
 
-/* 見出しは行の見た目を整える（余白は設計側で） */
 h1, h2, h3, h4, h5, h6 {
     font-weight: inherit;
-    text-wrap: balance; /* たいおうしていれば見出しの折返しがきれい */
+    text-wrap: balance;
 }
 
-/* 段落などの基本の余白は設計側で。ここでは0維持 */
 
-/* listの記号は一度消す（必要な箇所だけ付与） */
 ul, ol, menu {
     list-style: none;
     padding: 0;
 }
 
-/* tableは素直に重ねる */
 table {
     border-collapse: collapse;
     border-spacing: 0;
     inline-size: 100%;
 }
 
-/* th/tdの余白は設計側で。ここでは0維持 */
 th, td {
     padding: 0;
     text-align: start;
 }
 
-/* blockquoteなどの既定余白を消す */
 blockquote, figure {
     margin: 0;
 }
 
-/* hrは細い区切り線だけに */
 hr {
     border: none;
     border-block-start: 1px solid currentColor;
     opacity: 0.25;
 }
 
-/* codeは等幅にしつつ、折り返し保険 */
 pre, code, kbd, samp {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono",
                 "Noto Sans Mono", monospace;
@@ -128,9 +93,6 @@ pre, code, kbd, samp {
     white-space: pre-wrap;
 }
 
-/* --------------------------------
-    ふぉーむ要素のならし
------------------------------------ */
 input, button, textarea, select {
     font: inherit;
     color: inherit;
@@ -139,7 +101,6 @@ input, button, textarea, select {
     outline: none;
 }
 
-/* iOS/Safariの独自見た目を抑える */
 button,
 [type="button"],
 [type="submit"],
@@ -149,37 +110,21 @@ button,
     appearance: none;
 }
 
-/* クリックしやすいように最低タップ領域（設計で上書き可） */
-// button,
-// [role="button"],
-// input[type="checkbox"],
-// input[type="radio"],
-// input[type="range"],
-// select,
-// textarea {
-//     min-inline-size: 44px;
-//     min-block-size: 44px;
-// }
-
-/* buttonの初期値を素（余白は設計側で） */
 button {
     cursor: pointer;
     background: none;
 }
 
-/* disabledのぽい表現 */
 :disabled {
     cursor: not-allowed;
     opacity: 0.6;
 }
 
-/* inputのplaceholderの色は継承 */
 ::placeholder {
     color: inherit;
     opacity: 0.6;
 }
 
-/* numberのスピンぼたん無効（必要なら戻す） */
 input[type="number"] {
     -moz-appearance: textfield;
 }
@@ -189,25 +134,21 @@ input[type="number"]::-webkit-inner-spin-button {
     margin: 0;
 }
 
-/* searchの×ボタンなどを消す（必要なら戻す） */
 input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button {
     -webkit-appearance: none;
 }
 
-/* selectの矢印は一旦消す（UIは設計で） */
 select {
     -webkit-appearance: none;
     appearance: none;
     background: none;
 }
 
-/* textareaは縦方向のリサイズだけONにしておく */
 textarea {
     resize: vertical;
 }
 
-/* fieldset/legendの余白や線をリセット */
 fieldset {
     margin: 0;
     padding: 0;
@@ -218,17 +159,11 @@ legend {
     padding: 0;
 }
 
-/* --------------------------------
-    ふぉーかす見える化（:focus-visible）
------------------------------------ */
 :focus-visible {
     outline: $focus-ring-width solid $focus-ring-color;
     outline-offset: 2px;
 }
 
-/* --------------------------------
-    うごきが苦手な人へのやさしさ
------------------------------------ */
 @media (prefers-reduced-motion: reduce) {
     * {
         animation-duration: 0.01ms !important;
@@ -238,21 +173,14 @@ legend {
     }
 }
 
-/* --------------------------------
-    こまかい便利りせっと
------------------------------------ */
-
-/* 画像リンクのにじみを防ぐ */
 a img {
     border: 0;
 }
 
-/* smallを少し読みやすく（必要なら上書き） */
 small {
     font-size: 0.875em;
 }
 
-/* sup/subのずれ補正 */
 sub, sup {
     font-size: 0.75em;
     line-height: 0;
@@ -262,12 +190,10 @@ sub, sup {
 sub { bottom: -0.25em; }
 sup { top: -0.5em; }
 
-/* abbrの下線を細く */
 abbr[title] {
     text-decoration: underline dotted;
 }
 
-/* details/summaryの初期化 */
 details {
     display: block;
 }
@@ -276,7 +202,6 @@ summary {
     list-style: none;
 }
 
-/* ねんのための print ていせい（簡易） */
 @media print {
     *, *::before, *::after {
         background: transparent !important;

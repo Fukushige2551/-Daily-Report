@@ -1,9 +1,49 @@
+@use '../foundation/variable.scss' as *;
+
 /** common */
+// HTML
+.l-html {
+    &--themeColor {
+        background-color: $color-base;
+    }
+}
+
+// btn
+.c-btn {
+    &--general {
+        color: $color-btn-general-font;
+        font-weight: bold;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: $color-btn-general-bg;
+    }
+}
+
 // table
 .c-table {
     min-width: 1000px;
     table-layout: fixed;
     word-break: break-all;
+}
+.c-th {
+    &--sunday {
+        background-color: $color-table-th-sunday;
+    }
+    &--saturday {
+        background-color: $color-table-th-saturday;
+    }
+}
+.c-td {
+    &--parent {
+        background-color: $color-table-td-parent;
+        border-right: none;
+    }
+    &--child {
+        padding-left: 32px;
+    }
+    &--number {
+        text-align: right;
+    }
 }
 
 // modal
@@ -15,25 +55,21 @@
     padding: 2% 16%;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: $color-modal-bg;
 
-    &__contents {
-        position: relative;
-        color: #000;
-        background-color: #fff;
+    &__body {
+        color: $color-modal-content-font;
+        background-color: $color-modal-content-bg;
         padding: 2%;
         margin: auto;
         width: 100%;
         height: 100%;
         border-radius: 10px;
-    }
-    &__btn--close {
-        position: absolute;
-        top: 24px;
-        right: 24px;
-        color: #666;
-        border: 1px solid #ddd;
-        border-radius: 10px;
-        background-color: #ededed;
+
+        &__head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     }
 }

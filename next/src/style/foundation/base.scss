@@ -1,14 +1,47 @@
+@use '../foundation/variable.scss' as *;
+
+:root {
+    --color-btn-create-bg: #4cb84c;
+    --color-btn-crud-font: #efefef;
+    --color-table-th-sunday: #5d0000;
+    --color-table-th-saturday: #070057;
+    --color-modal-bg: rgba(0, 0, 0, 0.5);
+
+
+    /* light theme */
+    --color-html: #ededed;
+    --color-base: #fff;
+    --color-font-base: #999;
+    --color-btn-general-bg: #ededed;
+    --color-btn-general-font: #666;
+    --color-modal-content-bg: #222;
+    --color-modal-content-font: #000000;
+    --color-wbs-bar: #ddd;
+}
+
+/* dark theme */
+[data-theme="dark"] {
+    --color-html: #222;
+    --color-base: #121212;
+    --color-font-base: #666;
+    --color-btn-general-bg: #505050;
+    --color-btn-general-font: #ddd;
+    --color-table-td-parent: #121212;
+    --color-modal-content-bg: #222;
+    --color-modal-content-font: #ddd;
+    --color-wbs-bar: #ddd;
+}
+
 html {
     font-size: 62.5%;
 }
 body {
-    background-color: #222;
+    background-color: $color-html;
 }
 main {
-    color: #fff;
     padding: 24px;
 }
-h1, h2 {
+h1, h2, h3, h4, h5, h6 {
     font-weight: bold;
 }
 tr {

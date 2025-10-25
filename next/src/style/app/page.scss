@@ -1,5 +1,6 @@
-/** p-app */
+@use '../foundation/variable.scss' as *;
 
+/** p-app */
 .p-app {
     h1 {
         margin-bottom: 24px;
@@ -11,8 +12,9 @@
             position: absolute;
             top: 24px;
             right: 24px;
-            background-color: green;
-            color: white;
+            background-color: $color-btn-create-bg;
+            color: $color-btn-crud-font;
+            font-weight: bold;
             border-radius: 5px;
         }
     }
@@ -34,7 +36,7 @@
         }
     }
     .wbs {
-        background-color: #121212;
+        background-color: $color-base;
 
         &__table {
             td {
@@ -43,13 +45,13 @@
         }
         &__title {
             white-space: nowrap;
-            color: #666;
+            color: $color-font-base;
         }
         &__bar {
             position: relative;
             height: 8px;
             border-radius: 999px;
-            background-color: #ddd; /* ベース */
+            background-color: $color-wbs-bar;
             overflow: hidden;
 
             &__fill {
