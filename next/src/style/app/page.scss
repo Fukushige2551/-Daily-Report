@@ -6,16 +6,16 @@
         margin-bottom: 24px;
     }
     &__top {
-        position: relative;
+        display: flex;
+        justify-content: space-between;
 
         .c-btn {
-            position: absolute;
-            top: 24px;
-            right: 24px;
             background-color: $color-btn-create-bg;
             color: $color-btn-crud-font;
             font-weight: bold;
             border-radius: 5px;
+            height: fit-content;
+            padding: 8px 16px;
         }
     }
     &__section {
