@@ -33,20 +33,38 @@ export const Modal = ({
     return (
         <div className="c-modal">
             <div className="c-modal__body">
-                <div className="c-modal__body__head">
+                <section className="c-modal__body__head">
                     <button className="c-btn--general" onClick={() => closeModal()}>閉じる</button>
                     <h3>日報作成</h3>
                     <button className="c-btn--general" onClick={() => closeModal()}>次へ</button>
-                </div>
+                </section>
                 <div className="p-dailyReport">
-                    <dl>
+                    <dl className="p-dailyReport__time field">
                         <dt>日付</dt>
                         <dd>{formatted}</dd>
-                    </dl>
-                    <dl>
                         <dt>勤務時間</dt>
                         <dd>10:00 ~ {timeString}</dd>
                     </dl>
+
+                    <div className="field">
+                        <h4>完了</h4>
+                    </div>
+
+                    <div className="field">
+                        <h4>作業中</h4>
+                    </div>
+
+                    <div className="field">
+                        <h4>明日の作業</h4>
+                    </div>
+
+                    <div className="field">
+                        <h4>質問・相談</h4>
+                    </div>
+
+                    <div className="field">
+                        <h4>所感</h4>
+                    </div>
                 </div>
             </div>
         </div>
