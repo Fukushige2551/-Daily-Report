@@ -16,6 +16,7 @@
         border: 1px solid #ddd;
         border-radius: 10px;
         background-color: $color-btn-general-bg;
+        padding: 4px 8px;
     }
 }
 
@@ -70,6 +71,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 16px;
         }
     }
 }

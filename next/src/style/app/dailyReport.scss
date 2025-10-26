@@ -1,0 +1,19 @@
+@use '../foundation/variable.scss' as *;
+
+.c-modal__body {
+    display: flex;
+    flex-flow: column;
+}
+
+.p-dailyReport {
+    padding: 24px;
+    background-color: #343434;
+    border-radius: 10px;
+    height: 100%;
+    flex-grow: 1;
+
+    dl {
+        display: grid;
+        grid-template-columns: 70px 1fr;
+    }
+}
