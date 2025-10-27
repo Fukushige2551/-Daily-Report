@@ -16,23 +16,36 @@
     dl {
         display: grid;
     }
-
-    &__time {
-        grid-template-columns: 72px 1fr;
-    }
-    &__completed {
-        grid-gap: 16px 0;
-        grid-template-columns: 168px 1fr;
-        padding-left: 16px;
-    }
-
-    .field {
-        border-bottom: 1px solid #666;
-        padding-bottom: 8px;
+    h4 {
         margin-bottom: 8px;
+    }
+
+    &__field {
+        border-bottom: 1px solid #666;
+        padding-bottom: 16px;
+        margin-bottom: 16px;
 
         &:last-child {
             border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+
+        grid-template-columns: 72px 1fr;
+
+        &.time {
+            dt {
+                &::after {
+                    content: ':';
+                    position: absolute;
+                    right: 0;
+                }
+            }
+        }
+        .task {
+            grid-gap: 16px 0;
+            grid-template-columns: 168px 1fr;
+            padding-left: 16px;
         }
     }
 }

@@ -78,12 +78,6 @@ input, select {
 dt {
     position: relative;
     font-weight: bold;
-
-    &::after {
-        content: ':';
-        position: absolute;
-        right: 0;
-    }
 }
 dd {
     margin-left: 4px;

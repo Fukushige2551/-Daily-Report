@@ -1,5 +1,6 @@
 'use client'
 import React from "react"
+import { useState } from "react"
 import { master } from "@/js/master"
 import '../style/app/dailyReport.scss'
 
@@ -8,6 +9,8 @@ export const Modal = ({
     setModalDailyReport,
     listGroups
 }) => {
+    const [page, setPage] = useState(1);
+
     const closeModal = () => {
         setModal(false);
         setModalDailyReport(false);
@@ -32,33 +35,29 @@ export const Modal = ({
     // フォーマット整形
     const formatted = `${year}年${month}月${date}日(${weekday})`;
 
-    console.log(listGroups)
-    console.log(master)
-
     return (
         <div className="c-modal">
             <div className="c-modal__body">
                 <section className="c-modal__body__head">
-                    <button className="c-btn--general" onClick={() => closeModal()}>閉じる</button>
+                    {page === 1 && <button className="c-btn--general" onClick={() => closeModal()}>閉じる</button>}
+                    {page === 2 && <button className="c-btn--general" onClick={() => setPage(1)}>戻る</button>}
                     <h3>日報作成</h3>
-                    <button className="c-btn--general" onClick={() => closeModal()}>次へ</button>
+                    {page === 1 && <button className="c-btn--general" onClick={() => setPage(2)}>次へ</button>}
+                    {page === 2 && <button className="c-btn--general" onClick={() => closeModal()}>投稿</button>}
                 </section>
-                <div className="p-dailyReport">
-                    <dl className="p-dailyReport__time field">
+
+                {/* 1ページ目 */}
+                {page === 1 && <div className="p-dailyReport">
+                    <dl className="p-dailyReport__field time">
                         <dt>日付</dt>
                         <dd>{formatted}</dd>
                         <dt>勤務時間</dt>
                         <dd>10:00 ~ {timeString}</dd>
                     </dl>
 
-                    <div className="field">
+                    <div className="p-dailyReport__field">
                         <h4>完了</h4>
-                        
-                    </div>
-
-                    <div className="field">
-                        <h4>作業中</h4>
-                        <dl className="p-dailyReport__completed">
+                        <dl className="task">
                             {listGroups.map(l => {
                                 return <React.Fragment key={l[0]}>
                                     <dt>{master.project_id[l[0]]}</dt>
@@ -74,18 +73,53 @@ export const Modal = ({
                         </dl>
                     </div>
 
-                    <div className="field">
-                        <h4>明日の作業</h4>
+                    <div className="p-dailyReport__field">
+                        <h4>作業中</h4>
+                        <dl className="task">
+                            {listGroups.map(l => {
+                                return <React.Fragment key={l[0]}>
+                                    <dt>{master.project_id[l[0]]}</dt>
+                                    <dd>
+                                        <ul>
+                                            {l[1].map(t => {
+                                                return <li key={t.id}>{t.name}</li>
+                                            })}
+                                        </ul>
+                                    </dd>
+                                </React.Fragment>
+                            })}
+                        </dl>
                     </div>
 
-                    <div className="field">
+                    <div className="p-dailyReport__field">
+                        <h4>明日の作業</h4>
+                        <dl className="task">
+                            {listGroups.map(l => {
+                                return <React.Fragment key={l[0]}>
+                                    <dt>{master.project_id[l[0]]}</dt>
+                                    <dd>
+                                        <ul>
+                                            {l[1].map(t => {
+                                                return <li key={t.id}>{t.name}</li>
+                                            })}
+                                        </ul>
+                                    </dd>
+                                </React.Fragment>
+                            })}
+                        </dl>
+                    </div>
+                </div>}
+
+                {/* 2ページ目 */}
+                {page === 2 && <div className="p-dailyReport">
+                    <div className="p-dailyReport__field">
                         <h4>質問・相談</h4>
                     </div>
 
-                    <div className="field">
+                    <div className="p-dailyReport__field">
                         <h4>所感</h4>
                     </div>
-                </div>
+                </div>}
             </div>
         </div>
     )
