@@ -460,6 +460,7 @@ export default function Page({ setModal }) {
             {modalDailyReport && <Modal
 				setModal={setModal}
                 setModalDailyReport={setModalDailyReport}
+                listGroups={listGroups}
             />}
         </main>
     );

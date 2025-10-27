@@ -15,12 +15,20 @@
 
     dl {
         display: grid;
-        grid-template-columns: 70px 1fr;
+    }
+
+    &__time {
+        grid-template-columns: 72px 1fr;
+    }
+    &__completed {
+        grid-gap: 16px 0;
+        grid-template-columns: 168px 1fr;
+        padding-left: 16px;
     }
 
     .field {
         border-bottom: 1px solid #666;
-        padding-bottom: 4px;
+        padding-bottom: 8px;
         margin-bottom: 8px;
 
         &:last-child {

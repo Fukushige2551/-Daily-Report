@@ -1,10 +1,12 @@
 'use client'
 import React from "react"
+import { master } from "@/js/master"
 import '../style/app/dailyReport.scss'
 
 export const Modal = ({
     setModal,
-    setModalDailyReport
+    setModalDailyReport,
+    listGroups
 }) => {
     const closeModal = () => {
         setModal(false);
@@ -30,6 +32,9 @@ export const Modal = ({
     // フォーマット整形
     const formatted = `${year}年${month}月${date}日(${weekday})`;
 
+    console.log(listGroups)
+    console.log(master)
+
     return (
         <div className="c-modal">
             <div className="c-modal__body">
@@ -48,10 +53,25 @@ export const Modal = ({
 
                     <div className="field">
                         <h4>完了</h4>
+                        
                     </div>
 
                     <div className="field">
                         <h4>作業中</h4>
+                        <dl className="p-dailyReport__completed">
+                            {listGroups.map(l => {
+                                return <React.Fragment key={l[0]}>
+                                    <dt>{master.project_id[l[0]]}</dt>
+                                    <dd>
+                                        <ul>
+                                            {l[1].map(t => {
+                                                return <li key={t.id}>{t.name}</li>
+                                            })}
+                                        </ul>
+                                    </dd>
+                                </React.Fragment>
+                            })}
+                        </dl>
                     </div>
 
                     <div className="field">
