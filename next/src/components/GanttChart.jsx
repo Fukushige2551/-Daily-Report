@@ -208,7 +208,7 @@ export default function GanttChart({ tasks = [], master = {} }) {
                                 const pre = Math.max(0, dayIndex(t._startV));
                                 const span = Math.max(1, dayIndex(t._endV) - dayIndex(t._startV) + 1);
                                 const post = Math.max(0, days.length - pre - span);
-                                const title = `【${projectName}】${t.name}`;
+                                const title = `${t.name}`;
 
                                 return (
                                     <tr key={`g-${pid}-${t.id}-${i}`}>
