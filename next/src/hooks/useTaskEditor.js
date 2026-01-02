@@ -105,7 +105,6 @@ export function useTaskEditor() {
 
         // クリア
         setDraftRows([blankDraft()]);
-        alertFn('追加しました');
 
         return { ok: true, added: newOnes.length };
     };

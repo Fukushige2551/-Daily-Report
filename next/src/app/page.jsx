@@ -18,12 +18,13 @@ export default function Page({ setModal }) {
      */
     const column = [
         { id: 1, label: 'name', name: 'タスク名', type: 'text' },
-        { id: 2, label: 'project_id', name: 'プロジェクトID', type: 'id' },
-        { id: 3, label: 'complete_ratio', name: '進捗率(%)', type: 'number' },
-        { id: 4, label: 'time', name: '工数(h)', type: 'number' },
-        { id: 5, label: 'task_status', name: '状態ID', type: 'id' },
-        { id: 6, label: 'start_date', name: '開始日', type: 'date' },
-        { id: 7, label: 'end_date', name: '終了日', type: 'date' },
+        { id: 2, label: 'description', name: '内容', type: 'text' },
+        // { id: 2, label: 'project_id', name: 'プロジェクトID', type: 'id' },
+        { id: 3, label: 'start_date', name: '開始日', type: 'date' },
+        { id: 4, label: 'end_date', name: '終了日', type: 'date' },
+        { id: 5, label: 'task_status', name: '状態', type: 'id' },
+        { id: 6, label: 'complete_ratio', name: '進捗（%)', type: 'number' },
+        { id: 7, label: 'time', name: '工数 (h)', type: 'number' },
     ];
 
     /**

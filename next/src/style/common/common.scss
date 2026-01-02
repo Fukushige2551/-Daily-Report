@@ -33,8 +33,16 @@
     &--saturday {
         background-color: $color-table-th-saturday;
     }
-    &--control {
+    &--control,
+    &--task_status,
+    &--complete_ratio,
+    &--time {
         width: 80px;
+        text-align: center;
+    }
+    &--end_date,
+    &--start_date {
+        width: 120px;
         text-align: center;
     }
 }
@@ -44,7 +52,9 @@
         border-right: none;
     }
     &--child {
-        padding-left: 32px;
+        &:first-child {
+            padding-left: 32px;
+        }
     }
     &--number {
         text-align: right;

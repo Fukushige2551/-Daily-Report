@@ -6,7 +6,7 @@ export const master = {
     },
     task_status: {
         1: '未着手',
-        2: '作業中',
+        2: '進行中',
         3: '完了'
     }
 }

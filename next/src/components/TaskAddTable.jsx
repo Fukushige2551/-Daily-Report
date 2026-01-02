@@ -24,6 +24,9 @@ export default function TaskAddTable({
 }) {
     const placeholder = {
         name: 'タスク名を入力',
+        description: '内容を入力',
+        start_date: 'YYYY-MM-DD',
+        end_date: 'YYYY-MM-DD',
         complete_ratio: 0,
         time: 1.5,
     }
@@ -57,7 +60,7 @@ export default function TaskAddTable({
                                     return (
                                         <td key={id} className={`c-td`}>
                                             <select
-                                                value={String(r[label] ?? 0)}
+                                                value={String(r[label] ?? 1)}
                                                 onChange={(e) => onChangeDraft(r.__tmpid, label, e.target.value)}
                                                 className={`c-td--${type}`}
                                             >

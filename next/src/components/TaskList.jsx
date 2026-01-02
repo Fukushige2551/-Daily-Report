@@ -37,12 +37,12 @@ export default function TaskList({
                 <table className='c-table'>
                     <thead>
                         <tr>
-                        {column.map(({ id, name, type }) => (
-                            <th key={id} className={`c-th c-th--${type}`}>
-                            {name}
-                            </th>
-                        ))}
-                        <th className='c-th c-th--control'>操作</th>
+                            {column.map(({ id, name, label }) => (
+                                <th key={id} className={`c-th c-th--${label}`}>
+                                {name}
+                                </th>
+                            ))}
+                            <th className='c-th c-th--control'>操作</th>
                         </tr>
                     </thead>
 
@@ -50,7 +50,7 @@ export default function TaskList({
                         {listGroups.length === 0 && (
                         <tr>
                             <td colSpan={column.length + 1} style={{ textAlign: 'center' }}>
-                            この月に該当するタスクはありません
+                                この月に該当するタスクはありません
                             </td>
                         </tr>
                         )}
@@ -99,14 +99,15 @@ export default function TaskList({
                                             return (
                                             <td key={id} className={`c-td`}>
                                                 <input
-                                                type={
-                                                    type === 'number'
-                                                    ? 'number'
-                                                    : type === 'date'
-                                                    ? 'date'
-                                                    : 'text'
-                                                }
+                                                    type={
+                                                        type === 'number'
+                                                        ? 'number'
+                                                        : type === 'date'
+                                                        ? 'date'
+                                                        : 'text'
+                                                    }
                                                 value={String(raw ?? '')}
+                                                className={`c-td--${type}`}
                                                 onChange={(e) => onChangeEdit?.(t.id, label, e.target.value)}
                                                 />
                                             </td>
@@ -116,20 +117,20 @@ export default function TaskList({
 
                                     // 表示のみ
                                     if (raw === undefined || raw === null) return <td key={id}></td>;
-                                    const value = getVal ? getVal(raw, label, type) : String(raw);
+                                        const value = getVal ? getVal(raw, label, type) : String(raw);
 
-                                    return (
-                                        <td key={id} className={`c-td c-td--${type} c-td--child`}>
-                                        {value}
-                                        </td>
-                                    );
+                                        return (
+                                            <td key={id} className={`c-td c-td--${type} c-td--child`}>
+                                            {value}
+                                            </td>
+                                        );
                                     })}
 
                                     <td className='c-td c-td--control'>
                                     {!isEditing ? (
                                         <>
                                             <button type='button' onClick={() => startEdit?.(t.id)}>
-                                                三
+                                                ...
                                             </button>{' '}
                                             <button type='button' onClick={() => deleteTask?.(t.id)}>
                                                 ✕
