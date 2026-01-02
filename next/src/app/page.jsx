@@ -18,12 +18,12 @@ export default function Page({ setModal }) {
      */
     const column = [
         { id: 1, label: 'name', name: 'タスク名', type: 'text' },
-        { id: 7, label: 'project_id', name: 'プロジェクトID', type: 'id' },
-        { id: 2, label: 'complete_ratio', name: '進捗率(%)', type: 'number' },
-        { id: 3, label: 'task_status', name: '状態ID', type: 'id' },
-        { id: 4, label: 'start_date', name: '開始日', type: 'date' },
-        { id: 5, label: 'end_date', name: '終了日', type: 'date' },
-        { id: 6, label: 'time', name: '工数(h)', type: 'number' },
+        { id: 2, label: 'project_id', name: 'プロジェクトID', type: 'id' },
+        { id: 3, label: 'complete_ratio', name: '進捗率(%)', type: 'number' },
+        { id: 4, label: 'time', name: '工数(h)', type: 'number' },
+        { id: 5, label: 'task_status', name: '状態ID', type: 'id' },
+        { id: 6, label: 'start_date', name: '開始日', type: 'date' },
+        { id: 7, label: 'end_date', name: '終了日', type: 'date' },
     ];
 
     /**
@@ -92,14 +92,6 @@ export default function Page({ setModal }) {
                 tasks={tasks}
                 master={master}
             />
-            <TaskAddTable
-                column={column}
-                draftRows={draftRows}
-                addDraftRow={addDraftRow}
-                removeDraftRow={removeDraftRow}
-                onChangeDraft={onChangeDraft}
-                commitDraftRows={commitDraftRows}
-            />
             <TaskList
                 column={column}
                 listGroups={listGroups}
@@ -111,6 +103,14 @@ export default function Page({ setModal }) {
                 onChangeEdit={onChangeEdit}
                 saveEdit={saveEdit}
                 deleteTask={deleteTask}
+            />
+            <TaskAddTable
+                column={column}
+                draftRows={draftRows}
+                addDraftRow={addDraftRow}
+                removeDraftRow={removeDraftRow}
+                onChangeDraft={onChangeDraft}
+                commitDraftRows={commitDraftRows}
             />
             <DailyReportModal
                 isOpen={isDailyReportOpen}

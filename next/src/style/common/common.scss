@@ -33,6 +33,10 @@
     &--saturday {
         background-color: $color-table-th-saturday;
     }
+    &--control {
+        width: 80px;
+        text-align: center;
+    }
 }
 .c-td {
     &--parent {
@@ -44,6 +48,10 @@
     }
     &--number {
         text-align: right;
+    }
+    &--control {
+        display: flex;
+        justify-content: center;
     }
 }
 

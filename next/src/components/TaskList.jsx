@@ -31,18 +31,18 @@ export default function TaskList({
 }) {
     return (
         <section className='p-app__section'>
-            <h2 className='p-app__section__title'>タスク一覧</h2>
+            <h2 className='p-app__section__title'>一覧</h2>
 
             <div className='p-app__section__main task'>
                 <table className='c-table'>
                     <thead>
                         <tr>
                         {column.map(({ id, name, type }) => (
-                            <th key={id} className={`c-th--${type}`}>
+                            <th key={id} className={`c-th c-th--${type}`}>
                             {name}
                             </th>
                         ))}
-                        <th>操作</th>
+                        <th className='c-th c-th--control'>操作</th>
                         </tr>
                     </thead>
 
@@ -62,8 +62,8 @@ export default function TaskList({
                             <React.Fragment key={`list-${pid}`}>
                             {/* プロジェクト見出し行 */}
                             <tr>
-                                <td className='c-td--parent' colSpan={column.length + 1}>
-                                {projectName}
+                                <td className='c-td c-td--parent' colSpan={column.length + 1}>
+                                    {projectName}
                                 </td>
                             </tr>
 
@@ -81,7 +81,7 @@ export default function TaskList({
                                         switch (type) {
                                         case 'id':
                                             return (
-                                            <td key={id}>
+                                            <td key={id} className={`c-td`}>
                                                 <select
                                                 value={String(raw ?? 0)}
                                                 onChange={(e) => onChangeEdit?.(t.id, label, e.target.value)}
@@ -97,7 +97,7 @@ export default function TaskList({
 
                                         default:
                                             return (
-                                            <td key={id}>
+                                            <td key={id} className={`c-td`}>
                                                 <input
                                                 type={
                                                     type === 'number'
@@ -119,30 +119,30 @@ export default function TaskList({
                                     const value = getVal ? getVal(raw, label, type) : String(raw);
 
                                     return (
-                                        <td key={id} className={`c-td--${type} c-td--child`}>
+                                        <td key={id} className={`c-td c-td--${type} c-td--child`}>
                                         {value}
                                         </td>
                                     );
                                     })}
 
-                                    <td>
+                                    <td className='c-td c-td--control'>
                                     {!isEditing ? (
                                         <>
-                                        <button type='button' onClick={() => startEdit?.(t.id)}>
-                                            編集
-                                        </button>{' '}
-                                        <button type='button' onClick={() => deleteTask?.(t.id)}>
-                                            削除
-                                        </button>
+                                            <button type='button' onClick={() => startEdit?.(t.id)}>
+                                                三
+                                            </button>{' '}
+                                            <button type='button' onClick={() => deleteTask?.(t.id)}>
+                                                ✕
+                                            </button>
                                         </>
                                     ) : (
                                         <>
-                                        <button type='button' onClick={() => saveEdit?.(t.id)}>
-                                            保存
-                                        </button>{' '}
-                                        <button type='button' onClick={() => cancelEdit?.()}>
-                                            キャンセル
-                                        </button>
+                                            <button type='button' onClick={() => saveEdit?.(t.id)}>
+                                                ✓
+                                            </button>{' '}
+                                            <button type='button' onClick={() => cancelEdit?.()}>
+                                                ✕
+                                            </button>
                                         </>
                                     )}
                                     </td>

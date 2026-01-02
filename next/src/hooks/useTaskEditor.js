@@ -8,9 +8,9 @@ export function useTaskEditor() {
 
     // --- 追加テーブル（ドラフト行） ---
     const blankDraft = () => ({
-        project_id: 1,
+        project_id: '',
         name: '',
-        complete_ratio: 0,
+        complete_ratio: '',
         task_status: 1,
         start_date: '',
         end_date: '',
