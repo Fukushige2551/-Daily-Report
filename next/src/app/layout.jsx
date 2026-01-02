@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { modalHook } from '@/js/common';
+import { modalHook } from '@/hooks/common';
 import '../style/style.scss'
 import Page from './page';
 
