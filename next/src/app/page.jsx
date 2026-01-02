@@ -1,5 +1,5 @@
 'use client';
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../style/app/page.scss';
 
 import { getVal } from '../hooks/display';
