@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, useEffect } from 'react';
 import { modalHook } from '@/hooks/common';
 import '../style/style.scss'

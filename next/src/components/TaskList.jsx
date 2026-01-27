@@ -1,160 +1,82 @@
 'use client';
 
-import React from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { FontAwesomeIcon } from './icons/FontAwesomeIcon';
+import Input from './forms/Input';
 
-/**
- * タスク一覧（当月に該当するタスクだけ）表示 + 行編集
- *
- * Props:
- * - column: 表示カラム定義配列
- * - listGroups: [ [project_id, Task[]], ... ]（当月表示分だけ＆projectでグルーピング済）
- * - master: masterデータ（select表示用）
- * - getVal: 表示整形関数
- * - editingId: 現在編集中の task.id
- * - startEdit(id)
- * - cancelEdit()
- * - onChangeEdit(id, key, value)
- * - saveEdit(id)
- * - deleteTask(id)
- */
 export default function TaskList({
-    column = [],
-    listGroups = [],
-    master = {},
-    getVal,
-    editingId = null,
-    startEdit,
-    cancelEdit,
-    onChangeEdit,
-    saveEdit,
-    deleteTask,
+    maxId,
+    projectRow = [],
+    onChangeProjectEdit,
+    onAddProjectRow,
+    onDeleteProjectRow,
 }) {
+    const optionRef = useRef(null);
+
+    // プロジェクト行オプションの開閉
+    const [openFunction, setOpenFunction] = useState({
+        id: null, open: false,
+    });
+
+    /**
+     * 外側クリックでメニューを閉じる
+     */
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                optionRef.current &&
+                !optionRef.current.contains(event.target)
+            ) {
+                setOpenFunction({ id: null, open: false });
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     return (
         <section className='p-app__section'>
-            <h2 className='p-app__section__title'>一覧</h2>
+            <div className='p-app__section__list'>
+                {projectRow.length > 0 && projectRow.map(({ id, name}, i) => {
+                return (
 
-            <div className='p-app__section__main task'>
-                <table className='c-table'>
-                    <thead>
-                        <tr>
-                            {column.map(({ id, name, label }) => (
-                                <th key={id} className={`c-th c-th--${label}`}>
-                                {name}
-                                </th>
-                            ))}
-                            <th className='c-th c-th--control'>操作</th>
-                        </tr>
-                    </thead>
+                <div key={id} className='p-app__section__list__project'>
+                    <Input
+                        type='text'
+                        value={name || ''}
+                        onChange={(e) => {
+                            onChangeProjectEdit(id, 'name', e);
+                        }}
+                    />
+                    <button
+                        className='c-btn p-app__section__list__function'
+                        onClick={() => setOpenFunction({ id: id, open: true })}
+                    >
+                    </button>
 
-                    <tbody>
-                        {listGroups.length === 0 && (
-                        <tr>
-                            <td colSpan={column.length + 1} style={{ textAlign: 'center' }}>
-                                この月に該当するタスクはありません
-                            </td>
-                        </tr>
-                        )}
+                    {openFunction.open && openFunction.id === id &&
+                    <div ref={optionRef} className='c-btn p-app__section__list__options'>
+                        <button
+                            type='button'
+                            className='c-btn p-app__section__list__options__btn'
+                            onClick={() => onDeleteProjectRow(id)}
+                        >
+                            <FontAwesomeIcon icon="trash" />
+                        </button>
+                    </div>
+                    }
+                </div>
 
-                        {listGroups.map(([pid, arr]) => {
-                        const projectName = master?.project_id?.[pid] ?? `Project ${pid}`;
+                );
+                })
+                }
 
-                        return (
-                            <React.Fragment key={`list-${pid}`}>
-                            {/* プロジェクト見出し行 */}
-                            <tr>
-                                <td className='c-td c-td--parent' colSpan={column.length + 1}>
-                                    {projectName}
-                                </td>
-                            </tr>
-
-                            {/* プロジェクト配下タスク */}
-                            {arr.map((t, i) => {
-                                const isEditing = editingId === t.id;
-
-                                return (
-                                <tr key={`row-${pid}-${t.id}-${i}`}>
-                                    {column.map(({ id, label, type }) => {
-                                    const raw = t[label];
-
-                                    // 編集中
-                                    if (isEditing) {
-                                        switch (type) {
-                                        case 'id':
-                                            return (
-                                            <td key={id} className={`c-td`}>
-                                                <select
-                                                value={String(raw ?? 0)}
-                                                onChange={(e) => onChangeEdit?.(t.id, label, e.target.value)}
-                                                >
-                                                {Object.values(master?.[label] ?? {}).map((m, idx) => (
-                                                    <option key={`${label}-${idx}`} value={idx + 1}>
-                                                    {m}
-                                                    </option>
-                                                ))}
-                                                </select>
-                                            </td>
-                                            );
-
-                                        default:
-                                            return (
-                                            <td key={id} className={`c-td`}>
-                                                <input
-                                                    type={
-                                                        type === 'number'
-                                                        ? 'number'
-                                                        : type === 'date'
-                                                        ? 'date'
-                                                        : 'text'
-                                                    }
-                                                value={String(raw ?? '')}
-                                                className={`c-td--${type}`}
-                                                onChange={(e) => onChangeEdit?.(t.id, label, e.target.value)}
-                                                />
-                                            </td>
-                                            );
-                                        }
-                                    }
-
-                                    // 表示のみ
-                                    if (raw === undefined || raw === null) return <td key={id}></td>;
-                                        const value = getVal ? getVal(raw, label, type) : String(raw);
-
-                                        return (
-                                            <td key={id} className={`c-td c-td--${type} c-td--child`}>
-                                            {value}
-                                            </td>
-                                        );
-                                    })}
-
-                                    <td className='c-td c-td--control'>
-                                    {!isEditing ? (
-                                        <>
-                                            <button type='button' onClick={() => startEdit?.(t.id)}>
-                                                ...
-                                            </button>{' '}
-                                            <button type='button' onClick={() => deleteTask?.(t.id)}>
-                                                ✕
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <button type='button' onClick={() => saveEdit?.(t.id)}>
-                                                ✓
-                                            </button>{' '}
-                                            <button type='button' onClick={() => cancelEdit?.()}>
-                                                ✕
-                                            </button>
-                                        </>
-                                    )}
-                                    </td>
-                                </tr>
-                                );
-                            })}
-                            </React.Fragment>
-                        );
-                        })}
-                    </tbody>
-                </table>
+                <div className='p-app__section__list__project c-row--add' onClick={() => onAddProjectRow(maxId + 1)}>
+                    <span className='c-btn--add'></span>
+                </div>
             </div>
         </section>
     );

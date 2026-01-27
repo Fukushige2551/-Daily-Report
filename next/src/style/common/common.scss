@@ -8,8 +8,24 @@
     }
 }
 
+// row
+.c-row {
+    &--add {
+        display: flex;
+        align-items: center;
+        transition: all 0.2s;
+        cursor: pointer;
+
+        &:hover {
+            background-color: $color-btn-general-bg;
+        }
+    }
+}
+
 // btn
 .c-btn {
+    transition: all 0.2s;
+
     &--general {
         color: $color-btn-general-font;
         font-weight: bold;
@@ -17,6 +33,13 @@
         border-radius: 10px;
         background-color: $color-btn-general-bg;
         padding: 4px 8px;
+    }
+    &--add {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 1px dashed #ddd;
+        border-radius: 50%;
     }
 }
 
@@ -47,6 +70,15 @@
     }
 }
 .c-td {
+    transition: all 0.2s;
+
+    &--add {
+        cursor: pointer;
+
+        &:hover {
+            background-color: $color-btn-general-bg;
+        }
+    }
     &--parent {
         background-color: $color-table-td-parent;
         border-right: none;

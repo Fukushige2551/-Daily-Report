@@ -9,7 +9,6 @@ import { useGanttDerived } from '../hooks/useGanttDerived';
 
 import GanttChart from '../components/GanttChart';
 import TaskList from '../components/TaskList.jsx';
-import TaskAddTable from '../components/TaskAddTable.jsx';
 import DailyReportModal from '../components/DailyReportModal.jsx';
 
 export default function Page({ setModal }) {
@@ -17,14 +16,14 @@ export default function Page({ setModal }) {
      * 表示カラム
      */
     const column = [
-        { id: 1, label: 'name', name: 'タスク名', type: 'text' },
-        { id: 2, label: 'description', name: '内容', type: 'text' },
-        // { id: 2, label: 'project_id', name: 'プロジェクトID', type: 'id' },
-        { id: 3, label: 'start_date', name: '開始日', type: 'date' },
-        { id: 4, label: 'end_date', name: '終了日', type: 'date' },
-        { id: 5, label: 'task_status', name: '状態', type: 'id' },
-        { id: 6, label: 'complete_ratio', name: '進捗（%)', type: 'number' },
-        { id: 7, label: 'time', name: '工数 (h)', type: 'number' },
+        { id: 1, label: 'project_id', name: 'プロジェクト名', type: 'text' },
+        { id: 2, label: 'name', name: 'タスク名', type: 'text' },
+        { id: 3, label: 'description', name: '内容', type: 'text' },
+        { id: 4, label: 'start_date', name: '開始日', type: 'date' },
+        { id: 5, label: 'end_date', name: '終了日', type: 'date' },
+        { id: 6, label: 'task_status', name: '状態', type: 'id' },
+        { id: 7, label: 'complete_ratio', name: '進捗（%)', type: 'number' },
+        { id: 8, label: 'time', name: '工数 (h)', type: 'number' },
     ];
 
     /**
@@ -50,21 +49,13 @@ export default function Page({ setModal }) {
     const {
         // data
         tasks,
-        editingId,
-        draftRows,
+        projectRow,
+        maxId,
 
-        // edit handlers
-        startEdit,
-        cancelEdit,
-        onChangeEdit,
-        saveEdit,
-        deleteTask,
-
-        // draft handlers
-        addDraftRow,
-        removeDraftRow,
-        onChangeDraft,
-        commitDraftRows,
+        // handlers
+        onChangeProjectEdit,
+        onAddProjectRow,
+        onDeleteProjectRow,
     } = useTaskEditor();
 
     /**
@@ -94,30 +85,16 @@ export default function Page({ setModal }) {
                 master={master}
             />
             <TaskList
-                column={column}
-                listGroups={listGroups}
-                master={master}
-                getVal={getVal}
-                editingId={editingId}
-                startEdit={startEdit}
-                cancelEdit={cancelEdit}
-                onChangeEdit={onChangeEdit}
-                saveEdit={saveEdit}
-                deleteTask={deleteTask}
-            />
-            <TaskAddTable
-                column={column}
-                draftRows={draftRows}
-                addDraftRow={addDraftRow}
-                removeDraftRow={removeDraftRow}
-                onChangeDraft={onChangeDraft}
-                commitDraftRows={commitDraftRows}
+                maxId={maxId}
+                projectRow={projectRow}
+                onChangeProjectEdit={onChangeProjectEdit}
+                onAddProjectRow={onAddProjectRow}
+                onDeleteProjectRow={onDeleteProjectRow}
             />
             <DailyReportModal
                 isOpen={isDailyReportOpen}
                 onClose={closeDailyReport}
                 listGroups={listGroups}
-                // onSubmit={() => { ...投稿処理... }} // 必要なら
             />
         </main>
     );

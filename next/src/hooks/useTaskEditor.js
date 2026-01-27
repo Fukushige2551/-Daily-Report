@@ -8,6 +8,7 @@ export function useTaskEditor() {
 
     // --- 追加テーブル（ドラフト行） ---
     const blankDraft = () => ({
+        id: '',
         project_id: '',
         name: '',
         complete_ratio: '',
@@ -15,10 +16,10 @@ export function useTaskEditor() {
         start_date: '',
         end_date: '',
         time: '',
-        __tmpid: crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2),
     });
 
-    const [draftRows, setDraftRows] = useState([blankDraft()]);
+    const [projectRow, setProjectRow] = useState([]);
+    const maxId = projectRow?.length ? Math.max(...projectRow.map(g => g.id)) : 0
 
     const toNumOr = (v, fallback = 0) => {
         const n = Number(v);
@@ -37,8 +38,8 @@ export function useTaskEditor() {
     const startEdit = (id) => setEditingId(id);
     const cancelEdit = () => setEditingId(null);
 
-    const onChangeEdit = (id, key, value) => {
-        setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, [key]: value } : t)));
+    const onChangeProjectEdit = (id, key, value) => {
+        setProjectRow((prev) => prev.map((t) => (t.id === id ? { ...t, [key]: value } : t)));
     };
 
     const validateTask = (t) => {
@@ -69,45 +70,8 @@ export function useTaskEditor() {
     };
 
     // ===== 追加テーブル（ドラフト） =====
-    const addDraftRow = () => setDraftRows((prev) => [...prev, blankDraft()]);
-
-    const removeDraftRow = (tmpid) => {
-        setDraftRows((prev) => (prev.length <= 1 ? [blankDraft()] : prev.filter((r) => r.__tmpid !== tmpid)));
-    };
-
-    const onChangeDraft = (tmpid, key, value) => {
-        setDraftRows((prev) => prev.map((r) => (r.__tmpid === tmpid ? { ...r, [key]: value } : r)));
-    };
-
-    const commitDraftRows = ({ alertFn = alert } = {}) => {
-        // バリデーション（元のPageと同じ）
-        const errs = [];
-        draftRows.forEach((r, idx) => {
-        if (!r.name?.trim()) errs.push(`${idx + 1}行目: タスク名`);
-        if (!r.start_date) errs.push(`${idx + 1}行目: 開始日`);
-        if (!r.end_date) errs.push(`${idx + 1}行目: 終了日`);
-        if (r.start_date && r.end_date && new Date(r.start_date) > new Date(r.end_date)) {
-            errs.push(`${idx + 1}行目: 開始日は終了日以前`);
-        }
-        });
-
-        if (errs.length) {
-        alertFn('入力を確認してください：\n' + errs.join('\n'));
-        return { ok: false, message: 'validation_error', errors: errs };
-        }
-
-        // ID採番
-        const maxId = tasks.length ? Math.max(...tasks.map((t) => t.id)) : 0;
-        let nextId = maxId;
-
-        const newOnes = draftRows.map((r) => sanitizeTask({ ...r, id: ++nextId }));
-        setTasks((prev) => [...prev, ...newOnes]);
-
-        // クリア
-        setDraftRows([blankDraft()]);
-
-        return { ok: true, added: newOnes.length };
-    };
+    const onAddProjectRow = (id) => setProjectRow((prev) => [...prev, { ...blankDraft(), id }]);
+    const onDeleteProjectRow = (id) => setProjectRow((prev) => prev.filter((t) => t.id !== id));
 
     // 便利：外から tasks を置き換えたい場合（将来API連携など）
     const replaceTasks = (next) => setTasks(Array.isArray(next) ? next : []);
@@ -116,21 +80,19 @@ export function useTaskEditor() {
         // data
         tasks,
         editingId,
-        draftRows,
+        projectRow,
+        maxId,
 
         // edit handlers
         startEdit,
         cancelEdit,
-        onChangeEdit,
+        onChangeProjectEdit,
         saveEdit,
         deleteTask,
 
         // draft handlers
-        addDraftRow,
-        removeDraftRow,
-        onChangeDraft,
-        commitDraftRows,
-
+        onAddProjectRow,
+        onDeleteProjectRow,
         // misc
         replaceTasks,
     };

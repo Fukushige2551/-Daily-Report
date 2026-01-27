@@ -34,6 +34,68 @@
             border-radius: 8px;
             overflow: auto;
         }
+        &__list {
+            display: flex;
+
+            &__project {
+                display: flex;
+                position: relative;
+                margin-left: 24px;
+                padding: 8px 16px;
+                min-width: 360px;
+                min-height: 44px;
+                border: 1px solid #fff;
+                border-radius: 8px;
+
+                &:first-child {
+                    margin-left: 0;
+                }
+            }
+            &__function {
+                position: absolute;
+                top: 0;
+                right: 0;
+                height: 100%;
+                width: 16px;
+
+                &:hover {
+                    background-color: $color-btn-general-bg;
+                    cursor: pointer;
+                }
+            }
+            &__options {
+                position: absolute;
+                top: 50%;
+                right: -32px;
+                transform: translateY(-50%);
+                z-index: 10;
+                font-size: 1.2rem;
+                background-color: #000;
+                border: 1px solid #555;
+                border-radius: 4px;
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    top: 50%;
+                    left: -12px;
+                    transform: translateY(-50%);
+                    border-width: 6px;
+                    border-style: solid;
+                    border-color: transparent #555 transparent transparent;
+                }
+
+                &__btn {
+                    width: 24px;
+                    height: 24px;
+                    border-radius: 4px;
+
+                    &:hover {
+                        background-color: $color-btn-delete-bg;
+                    }
+                }
+            }
+        }
     }
     .wbs {
         background-color: $color-base;

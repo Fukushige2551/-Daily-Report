@@ -2,6 +2,7 @@
 
 :root {
     --color-btn-create-bg: #4cb84c;
+    --color-btn-delete-bg: #ff0000;
     --color-btn-crud-font: #efefef;
     --color-table-th-sunday: #5d0000;
     --color-table-th-saturday: #070057;
@@ -79,6 +80,11 @@ table {
 }
 input, select {
     width: 100%;
+
+    &:focus {
+        outline: none;
+        box-shadow: none;
+    }
 }
 option {
     color: #000;

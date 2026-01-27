@@ -24,14 +24,13 @@
         border-bottom: 1px solid #666;
         padding-bottom: 16px;
         margin-bottom: 16px;
+        grid-template-columns: 72px 1fr;
 
         &:last-child {
             border-bottom: none;
             padding-bottom: 0;
             margin-bottom: 0;
         }
-
-        grid-template-columns: 72px 1fr;
 
         &.time {
             dt {
@@ -42,10 +41,10 @@
                 }
             }
         }
-        .task {
-            grid-gap: 16px 0;
-            grid-template-columns: 168px 1fr;
-            padding-left: 16px;
-        }
+        // .task {
+        //     grid-gap: 16px 0;
+        //     grid-template-columns: 168px 1fr;
+        //     padding-left: 16px;
+        // }
     }
 }

@@ -129,23 +129,7 @@ export default function GanttChart({ tasks = [], master = {} }) {
 
     return (
         <section className='p-app__section'>
-            <h2 className='p-app__section__title'>ガントチャート</h2>
-
-            {/* 月ページング */}
-            <div
-                className='wbs__controls'
-                style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: 12 }}
-            >
-            <button type='button' onClick={handlePrev} aria-label='前の月へ'>
-                ←
-            </button>
-            <div>
-                {viewStart.getFullYear()} / {String(viewStart.getMonth() + 1).padStart(2, '0')}
-            </div>
-            <button type='button' onClick={handleNext} aria-label='次の月へ'>
-                →
-            </button>
-            </div>
+            {/* <h2 className='p-app__section__title'>ガントチャート</h2> */}
 
             <div className='p-app__section__main wbs'>
                 <table className='c-table wbs__table'>
@@ -153,7 +137,15 @@ export default function GanttChart({ tasks = [], master = {} }) {
                     <tr>
                         {monthGroups.map((g, i) => (
                         <th key={i} colSpan={g.span} className='c-th--month'>
+                            <button type='button' onClick={handlePrev} aria-label='前の月へ'>
+                                ←
+                            </button>
+
                             {g.label}
+
+                            <button type='button' onClick={handleNext} aria-label='次の月へ'>
+                                →
+                            </button>
                         </th>
                         ))}
                     </tr>
@@ -184,14 +176,6 @@ export default function GanttChart({ tasks = [], master = {} }) {
                     </thead>
 
                     <tbody>
-                    {ganttGroups.length === 0 && (
-                        <tr>
-                            <td colSpan={days.length} style={{ textAlign: 'center' }}>
-                                この月に該当するタスクはありません
-                            </td>
-                        </tr>
-                    )}
-
                     {ganttGroups.map(([pid, arr]) => {
                         const projectName = master?.project_id?.[pid] ?? `Project ${pid}`;
                         return (
