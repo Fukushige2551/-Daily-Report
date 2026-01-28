@@ -32,6 +32,13 @@
         }
         &__list {
             display: flex;
+            min-height: 50vh;
+            overflow: auto;
+            -ms-overflow-style: none;  /* IE/Edge(旧) */
+            scrollbar-width: none;     /* Firefox */
+            &::-webkit-scrollbar {
+                display: none;         /* Chrome,Safari,Opera */
+            }
 
             &__project {
                 position: relative;

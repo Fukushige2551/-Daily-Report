@@ -6,10 +6,12 @@ import Input from './forms/Input';
 
 export default function TaskList({
     maxId,
+    tasks = [],
     projectRow = [],
     onChangeProjectEdit,
     onAddProjectRow,
     onDeleteProjectRow,
+    onAddTaskRow,
 }) {
     const optionRef = useRef(null);
 
@@ -77,11 +79,27 @@ export default function TaskList({
                     </div>
                     }
 
+                    {/* タスク */}
+                    {tasks.filter(task => task.project_id === id).map(task => (
+                    <div key={task.id} className='p-app__section__list__project__task'>
+                        <Input
+                            name={`task_name_${task.id}`}
+                            type='text'
+                            value={task.name || ''}
+                            placeholder='タスク名'
+                            className='p-app__section__list__project__task__name'
+                            onChange={(e) => {
+                                () => {};
+                            }}
+                        />
+                    </div>
+                    ))}
+
                     {/* タスク追加 */}
                     <button
                         type='button'
                         className='c-btn p-app__section__list__project__task--add'
-                        onClick={() => onAddProjectRow(id)}
+                        onClick={() => onAddTaskRow({ project_id: id })}
                     >
                         <FontAwesomeIcon icon="plus" />
                     </button>

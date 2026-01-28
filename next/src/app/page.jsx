@@ -55,6 +55,7 @@ export default function Page({ setModal }) {
         onChangeProjectEdit,
         onAddProjectRow,
         onDeleteProjectRow,
+        onAddTaskRow,
     } = useTaskEditor();
 
     /**
@@ -79,15 +80,17 @@ export default function Page({ setModal }) {
                 </button>
             </div>
 
-            <GanttChart
-                tasks={tasks}
-            />
             <TaskList
                 maxId={maxId}
+                tasks={tasks}
                 projectRow={projectRow}
                 onChangeProjectEdit={onChangeProjectEdit}
                 onAddProjectRow={onAddProjectRow}
                 onDeleteProjectRow={onDeleteProjectRow}
+                onAddTaskRow={onAddTaskRow}
+            />
+            <GanttChart
+                tasks={tasks}
             />
             <DailyReportModal
                 isOpen={isDailyReportOpen}
