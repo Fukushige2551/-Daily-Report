@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import '../style/app/page.scss';
 
 import { getVal } from '../hooks/display';
-import { master } from '../hooks/master';
 import { useTaskEditor } from '../hooks/useTaskEditor';
 import { useGanttDerived } from '../hooks/useGanttDerived';
 
@@ -75,14 +74,13 @@ export default function Page({ setModal }) {
         <main className='p-app'>
             <div className='p-app__top'>
                 <h1>Dashboard</h1>
-                <button className='c-btn' onClick={openDailyReport}>
+                <button className='c-btn c-btn--create' onClick={openDailyReport}>
                     日報作成
                 </button>
             </div>
 
             <GanttChart
                 tasks={tasks}
-                master={master}
             />
             <TaskList
                 maxId={maxId}

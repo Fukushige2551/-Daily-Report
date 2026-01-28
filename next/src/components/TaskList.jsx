@@ -43,36 +43,52 @@ export default function TaskList({
                 {projectRow.length > 0 && projectRow.map(({ id, name}, i) => {
                 return (
 
+                /**
+                 * プロジェクト
+                 */
                 <div key={id} className='p-app__section__list__project'>
+                    {/* プロジェクト名 */}
                     <Input
+                        name={`project_name`}
                         type='text'
                         value={name || ''}
+                        placeholder='プロジェクト名'
+                        className='p-app__section__list__project__name'
                         onChange={(e) => {
                             onChangeProjectEdit(id, 'name', e);
                         }}
                     />
-                    <button
-                        className='c-btn p-app__section__list__function'
-                        onClick={() => setOpenFunction({ id: id, open: true })}
-                    >
-                    </button>
+
+                    {/* プロジェクト操作 */}
+                    <button className='c-btn p-app__section__list__function' onClick={() => setOpenFunction({ id: id, open: true })}></button>
 
                     {openFunction.open && openFunction.id === id &&
                     <div ref={optionRef} className='c-btn p-app__section__list__options'>
                         <button
                             type='button'
                             className='c-btn p-app__section__list__options__btn'
-                            onClick={() => onDeleteProjectRow(id)}
+                            onClick={() => {
+                                setOpenFunction({ id: null, open: false });
+                                onDeleteProjectRow(id);
+                            }}
                         >
                             <FontAwesomeIcon icon="trash" />
                         </button>
                     </div>
                     }
+
+                    {/* タスク追加 */}
+                    <button
+                        type='button'
+                        className='c-btn p-app__section__list__project__task--add'
+                        onClick={() => onAddProjectRow(id)}
+                    >
+                        <FontAwesomeIcon icon="plus" />
+                    </button>
                 </div>
 
                 );
-                })
-                }
+                })}
 
                 <div className='p-app__section__list__project c-row--add' onClick={() => onAddProjectRow(maxId + 1)}>
                     <span className='c-btn--add'></span>

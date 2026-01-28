@@ -41,6 +41,12 @@
         border: 1px dashed #ddd;
         border-radius: 50%;
     }
+    &--create {
+        background-color: $color-btn-create-bg;
+        color: $color-btn-crud-font;
+        border-radius: 5px;
+        padding: 8px 16px;
+    }
 }
 
 // table
