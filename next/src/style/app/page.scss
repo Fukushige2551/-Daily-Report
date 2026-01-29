@@ -66,7 +66,6 @@
                     &--add {
                         width: 100%;
                         border-radius: 8px;
-                        // text-align: left;
 
                         &:hover {
                             cursor: pointer;
@@ -79,45 +78,39 @@
                 position: absolute;
                 top: 0;
                 right: 0;
-                height: 100%;
-                width: 12px;
-                border-radius: 0 8px 8px 0;
+                margin: 8px 16px;
 
                 &:hover {
                     cursor: pointer;
-                    background-color: $color-btn-general-bg;
+                    color: $color-btn-general-bg;
                 }
             }
             &__options {
                 position: absolute;
-                top: 50%;
-                right: -32px;
-                transform: translateY(-50%);
                 z-index: 10;
+                width: 104px;
                 font-size: 1.2rem;
-                background-color: #000;
-                border: 1px solid #555;
+                background-color: $color-btn-general-bg;
+                border: 1px solid #666;
                 border-radius: 4px;
+                transition: 0.2s all;
 
-                &::after {
-                    content: '';
-                    position: absolute;
-                    top: 50%;
-                    left: -12px;
-                    transform: translateY(-50%);
-                    border-width: 6px;
-                    border-style: solid;
-                    border-color: transparent #555 transparent transparent;
+                &.is-open {
+                    opacity: 0.8;
+                    top: 0;
+                    right: 0;
+                }
+                &.is-closed {
+                    opacity: 0;
+                    top: 4px;
+                    right: 0;
+                    pointer-events: none;
                 }
 
                 &__btn {
-                    width: 24px;
+                    width: 100%;
                     height: 24px;
                     border-radius: 4px;
-
-                    &:hover {
-                        background-color: $color-btn-delete-bg;
-                    }
                 }
             }
         }

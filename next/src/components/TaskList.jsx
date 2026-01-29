@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from './icons/FontAwesomeIcon';
 import Input from './forms/Input';
 
 export default function TaskList({
-    maxId,
     tasks = [],
     projectRow = [],
     onChangeProjectEdit,
@@ -39,10 +38,23 @@ export default function TaskList({
         };
     }, []);
 
+    /**
+     * プロジェクト操作ボタン
+     */
+    const projectMennuBtns = () => {
+        return [
+            { id: 1, type: 'sort', icon: 'link', display: '', action: () => {} },
+            { id: 2, type: 'sort', icon: 'unlink', display: '', action: () => {} },
+            { id: 3, type: 'delete', icon: 'trash', display: '', action: (id) => { setOpenFunction({ id: null, open: false }); onDeleteProjectRow(id);} },
+        ]
+    }
+
     return (
         <section className='p-app__section'>
             <div className='p-app__section__list'>
-                {projectRow.length > 0 && projectRow.map(({ id, name}, i) => {
+                {projectRow.length > 0 && projectRow.map(({ id, name }) => {
+                const projectMenuOpened = openFunction.open && openFunction.id === id;
+
                 return (
 
                 /**
@@ -62,22 +74,32 @@ export default function TaskList({
                     />
 
                     {/* プロジェクト操作 */}
-                    <button className='c-btn p-app__section__list__function' onClick={() => setOpenFunction({ id: id, open: true })}></button>
+                    <button
+                        className='c-btn p-app__section__list__function'
+                        onClick={() => setOpenFunction({ id: id, open: true })}
+                    >
+                        <FontAwesomeIcon icon="bars" />
+                    </button>
 
-                    {openFunction.open && openFunction.id === id &&
-                    <div ref={optionRef} className='c-btn p-app__section__list__options'>
+                    {/* 操作オプション */}
+                    <div
+                        ref={projectMenuOpened ? optionRef : null}
+                        className={`p-app__section__list__options ${projectMenuOpened ? 'is-open' : 'is-closed'}`}
+                    >
+                        {projectMennuBtns().map(({ id: btnId, type, icon, display, action }) => (
+
                         <button
+                            key={btnId}
                             type='button'
-                            className='c-btn p-app__section__list__options__btn'
-                            onClick={() => {
-                                setOpenFunction({ id: null, open: false });
-                                onDeleteProjectRow(id);
-                            }}
+                            className={`c-btn c-btn--${type} p-app__section__list__options__btn`}
+                            onClick={() => action(id)}
                         >
-                            <FontAwesomeIcon icon="trash" />
+                            { icon && <FontAwesomeIcon icon={icon} /> }
+                            { display }
                         </button>
+
+                        ))}
                     </div>
-                    }
 
                     {/* タスク */}
                     {tasks.filter(task => task.project_id === id).map(task => (
@@ -108,7 +130,7 @@ export default function TaskList({
                 );
                 })}
 
-                <div className='p-app__section__list__project c-row--add' onClick={() => onAddProjectRow(maxId + 1)}>
+                <div className='p-app__section__list__project c-row--add' onClick={() => onAddProjectRow()}>
                     <span className='c-btn--add'></span>
                 </div>
             </div>

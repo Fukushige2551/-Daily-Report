@@ -1,8 +1,3 @@
-/* color */
-$color-btn-create-bg: var(--color-btn-create-bg);
-$color-btn-delete-bg: var(--color-btn-delete-bg);
-$color-btn-crud-font: var(--color-btn-crud-font);
-
 /* light / dark theme */
 $color-html: var(--color-html);
 $color-base: var(--color-base);
@@ -15,7 +10,11 @@ $color-table-td-parent: var(--color-table-td-parent);
 
 // btn
 $color-btn-general-bg: var(--color-btn-general-bg);
+$color-btn-general-bg--hover: var(--color-btn-general-bg--hover);
 $color-btn-general-font: var(--color-btn-general-font);
+$color-btn-create-bg: var(--color-btn-create-bg);
+$color-btn-delete-bg: var(--color-btn-delete-bg);
+$color-btn-crud-font: var(--color-btn-crud-font);
 
 // modal
 $color-modal-bg: var(--color-modal-bg);

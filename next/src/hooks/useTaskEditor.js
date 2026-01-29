@@ -7,11 +7,11 @@ export function useTaskEditor() {
      * プロジェクト
      */
     const [projectRow, setProjectRow] = useState([]);
-    const maxId = projectRow?.length ? Math.max(...projectRow.map(g => g.id)) : 0
+    const maxProjectId = projectRow?.length ? Math.max(...projectRow.map(g => g.id)) : 0
 
     // 追加プロジェクトの型
     const blankProjectDraft = () => ({
-        id: '',
+        id: maxProjectId + 1,
         project_id: '',
         name: '',
         complete_ratio: '',
@@ -22,7 +22,7 @@ export function useTaskEditor() {
     });
 
     // プロジェクト追加
-    const onAddProjectRow = (id) => setProjectRow((prev) => [...prev, { ...blankProjectDraft(), id }]);
+    const onAddProjectRow = () => setProjectRow((prev) => [...prev, { ...blankProjectDraft() }]);
 
     // プロジェクト削除
     const onDeleteProjectRow = (id) => {
@@ -38,12 +38,14 @@ export function useTaskEditor() {
      * タスク
      */
     const [tasks, setTasks] = useState([]);
+    const maxTaskId = tasks?.length ? Math.max(...tasks.map(g => g.id)) : 0
+
     // 今日の日付
     const formatted = new Date().toISOString().slice(0, 10);
 
     // 追加タスクの型
     const blankTaskDraft = () => ({
-        id: 1,
+        id: maxTaskId + 1,
         project_id: 1,
         name: '',
         complete_ratio: 0,
@@ -58,7 +60,7 @@ export function useTaskEditor() {
     return {
         tasks,
         projectRow,
-        maxId,
+        maxProjectId,
 
         onChangeProjectEdit,
         onAddProjectRow,

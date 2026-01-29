@@ -9,16 +9,12 @@ export default function RootLayout({ children }) {
 	const [theme, setTheme] = useState('dark');
 	const { modal, setModal } = modalHook();
 
-	useEffect(() => {
-		document.documentElement.setAttribute("data-theme", theme);
-	}, [theme]);
-
 	const toggleTheme = () => {
 		setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
 	};
 
 	return (
-		<html lang="jp">
+		<html lang="jp" data-theme={theme}>
 			<body className={modal ? 'u-scroll-disabled' : ''}>
 				{/* <button className='l-html--themeColor' onClick={toggleTheme}>L/D</button> */}
 				{/* {children} */}

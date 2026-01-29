@@ -47,6 +47,16 @@
         border-radius: 5px;
         padding: 8px 16px;
     }
+    &--sort {
+        &:hover {
+            background-color: $color-btn-general-bg--hover;
+        }
+    }
+    &--delete {
+        &:hover {
+            background-color: $color-btn-delete-bg;
+        }
+    }
 }
 
 // table

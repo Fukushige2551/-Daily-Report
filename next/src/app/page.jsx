@@ -49,7 +49,6 @@ export default function Page({ setModal }) {
         // data
         tasks,
         projectRow,
-        maxId,
 
         // handlers
         onChangeProjectEdit,
@@ -81,7 +80,6 @@ export default function Page({ setModal }) {
             </div>
 
             <TaskList
-                maxId={maxId}
                 tasks={tasks}
                 projectRow={projectRow}
                 onChangeProjectEdit={onChangeProjectEdit}
