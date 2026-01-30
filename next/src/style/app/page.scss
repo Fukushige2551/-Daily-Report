@@ -57,12 +57,19 @@
                     margin-left: 0;
                 }
 
+                &__header {
+                    position: relative;
+                }
                 &__name {
                     border-bottom: 1px solid #fff;
                     padding-bottom: 8px;
                     margin-bottom: 8px;
                 }
                 &__task {
+                    position: relative;
+                    // display: flex;
+                    // align-items: center;
+
                     &--add {
                         width: 100%;
                         border-radius: 8px;
@@ -78,7 +85,6 @@
                 position: absolute;
                 top: 0;
                 right: 0;
-                margin: 8px 16px;
 
                 &:hover {
                     cursor: pointer;
@@ -98,13 +104,18 @@
                 &.is-open {
                     opacity: 0.8;
                     top: 0;
-                    right: 0;
+                    right: -104px;
+
+                    // right: 0;
                 }
                 &.is-closed {
                     opacity: 0;
-                    top: 4px;
-                    right: 0;
+                    top: 2px;
+                    right: -88px;
                     pointer-events: none;
+
+                    // top: 4px;
+                    // right: -8px;
                 }
 
                 &__btn {

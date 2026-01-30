@@ -11,11 +11,18 @@ export default function TaskList({
     onAddProjectRow,
     onDeleteProjectRow,
     onAddTaskRow,
+    onChangeTaskEdit,
+    onDeleteTaskRow,
 }) {
-    const optionRef = useRef(null);
+    const projectOptionRef = useRef(null);
+    const taskOptionRef = useRef(null);
 
     // プロジェクト行オプションの開閉
-    const [openFunction, setOpenFunction] = useState({
+    const [openProjectFunction, setOpenProjectFunction] = useState({
+        id: null, open: false,
+    });
+    // タスク行オプションの開閉
+    const [openTaskFunction, setOpenTaskFunction] = useState({
         id: null, open: false,
     });
 
@@ -24,11 +31,20 @@ export default function TaskList({
      */
     useEffect(() => {
         const handleClickOutside = (event) => {
+            // プロジェクトメニューを閉じる
             if (
-                optionRef.current &&
-                !optionRef.current.contains(event.target)
+                projectOptionRef.current &&
+                !projectOptionRef.current.contains(event.target)
             ) {
-                setOpenFunction({ id: null, open: false });
+                setOpenProjectFunction({ id: null, open: false });
+            }
+
+            // タスクメニューを閉じる
+            if (
+                taskOptionRef.current &&
+                !taskOptionRef.current.contains(event.target)
+            ) {
+                setOpenTaskFunction({ id: null, open: false });
             }
         };
 
@@ -45,7 +61,18 @@ export default function TaskList({
         return [
             { id: 1, type: 'sort', icon: 'link', display: '', action: () => {} },
             { id: 2, type: 'sort', icon: 'unlink', display: '', action: () => {} },
-            { id: 3, type: 'delete', icon: 'trash', display: '', action: (id) => { setOpenFunction({ id: null, open: false }); onDeleteProjectRow(id);} },
+            { id: 3, type: 'delete', icon: 'trash', display: '', action: (id) => { setOpenProjectFunction({ id: null, open: false }); onDeleteProjectRow(id);} },
+        ]
+    }
+
+    /**
+     * タスク操作ボタン
+     */
+    const taskMennuBtns = () => {
+        return [
+            { id: 1, type: 'sort', icon: 'link', display: '', action: () => {} },
+            { id: 2, type: 'sort', icon: 'unlink', display: '', action: () => {} },
+            { id: 3, type: 'delete', icon: 'trash', display: '', action: (id) => { setOpenTaskFunction({ id: null, open: false }); onDeleteTaskRow(id);} },
         ]
     }
 
@@ -53,7 +80,8 @@ export default function TaskList({
         <section className='p-app__section'>
             <div className='p-app__section__list'>
                 {projectRow.length > 0 && projectRow.map(({ id, name }) => {
-                const projectMenuOpened = openFunction.open && openFunction.id === id;
+                const projectMenuOpened = openProjectFunction.open && openProjectFunction.id === id;
+                const taskMenuOpened = (taskId) => openTaskFunction.open && openTaskFunction.id === taskId;
 
                 return (
 
@@ -62,28 +90,30 @@ export default function TaskList({
                  */
                 <div key={id} className='p-app__section__list__project'>
                     {/* プロジェクト名 */}
-                    <Input
-                        name={`project_name`}
-                        type='text'
-                        value={name || ''}
-                        placeholder='プロジェクト名'
-                        className='p-app__section__list__project__name'
-                        onChange={(e) => {
-                            onChangeProjectEdit(id, 'name', e);
-                        }}
-                    />
+                    <div className='p-app__section__list__project__header'>
+                        <Input
+                            name={`project_name`}
+                            type='text'
+                            value={name || ''}
+                            placeholder={`Project ${id}`}
+                            className='p-app__section__list__project__name'
+                            onChange={(e) => {
+                                onChangeProjectEdit(id, 'name', e);
+                            }}
+                        />
 
-                    {/* プロジェクト操作 */}
-                    <button
-                        className='c-btn p-app__section__list__function'
-                        onClick={() => setOpenFunction({ id: id, open: true })}
-                    >
-                        <FontAwesomeIcon icon="bars" />
-                    </button>
+                        {/* プロジェクト操作 */}
+                        <button
+                            className='c-btn p-app__section__list__function'
+                            onClick={() => setOpenProjectFunction({ id: id, open: true })}
+                        >
+                            <FontAwesomeIcon icon="bars" />
+                        </button>
+                    </div>
 
-                    {/* 操作オプション */}
+                    {/* プロジェクト操作オプション */}
                     <div
-                        ref={projectMenuOpened ? optionRef : null}
+                        ref={projectMenuOpened ? projectOptionRef : null}
                         className={`p-app__section__list__options ${projectMenuOpened ? 'is-open' : 'is-closed'}`}
                     >
                         {projectMennuBtns().map(({ id: btnId, type, icon, display, action }) => (
@@ -103,17 +133,50 @@ export default function TaskList({
 
                     {/* タスク */}
                     {tasks.filter(task => task.project_id === id).map(task => (
-                    <div key={task.id} className='p-app__section__list__project__task'>
+                    <div
+                        key={task.id}
+                        className='p-app__section__list__project__task'
+                    >
                         <Input
                             name={`task_name_${task.id}`}
                             type='text'
                             value={task.name || ''}
-                            placeholder='タスク名'
+                            placeholder={`Task ${task.id}`}
                             className='p-app__section__list__project__task__name'
                             onChange={(e) => {
-                                () => {};
+                                onChangeTaskEdit(task.id, 'name', e);
                             }}
                         />
+
+                        {/* タスク操作 */}
+                        <button
+                            className='c-btn p-app__section__list__function'
+                            onClick={() => setOpenTaskFunction({ id: task.id, open: true })}
+                        >
+                            <FontAwesomeIcon icon="ellipsis-v" />
+                        </button>
+
+                        {/* タスク操作オプション */}
+                        <div
+                            ref={taskMenuOpened(task.id) ? taskOptionRef : null}
+                            className={`p-app__section__list__options p-app__section__list__options--task ${
+                                taskMenuOpened(task.id) ? 'is-open' : 'is-closed'
+                            }`}
+                        >
+                            {taskMennuBtns().map(({ id: btnId, type, icon, display, action }) => (
+
+                            <button
+                                key={btnId}
+                                type='button'
+                                className={`c-btn c-btn--${type} p-app__section__list__options__btn`}
+                                onClick={() => action(task.id)}
+                            >
+                                {icon && <FontAwesomeIcon icon={icon} />}
+                                {display}
+                            </button>
+
+                            ))}
+                        </div>
                     </div>
                     ))}
 

@@ -55,7 +55,17 @@ export function useTaskEditor() {
         time: 8,
     });
 
+    // タスク追加
     const onAddTaskRow = (task) => setTasks((prev) => [...prev, { ...blankTaskDraft(), ...task }]);
+
+    // タスク削除
+    const onDeleteTaskRow = (id) => {
+        setTasks((prev) => prev.filter((t) => t.id !== id));
+    };
+
+    // タスク編集
+    const onChangeTaskEdit = (id, key, value) =>
+        setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, [key]: value } : t)));
 
     return {
         tasks,
@@ -66,5 +76,7 @@ export function useTaskEditor() {
         onAddProjectRow,
         onDeleteProjectRow,
         onAddTaskRow,
+        onChangeTaskEdit,
+        onDeleteTaskRow,
     };
 }

@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import '../style/app/page.scss';
 
-import { getVal } from '../hooks/display';
 import { useTaskEditor } from '../hooks/useTaskEditor';
 import { useGanttDerived } from '../hooks/useGanttDerived';
 
@@ -55,6 +54,8 @@ export default function Page({ setModal }) {
         onAddProjectRow,
         onDeleteProjectRow,
         onAddTaskRow,
+        onChangeTaskEdit,
+        onDeleteTaskRow,
     } = useTaskEditor();
 
     /**
@@ -80,20 +81,23 @@ export default function Page({ setModal }) {
             </div>
 
             <TaskList
-                tasks={tasks}
                 projectRow={projectRow}
+                tasks={tasks}
+                column={column}
                 onChangeProjectEdit={onChangeProjectEdit}
                 onAddProjectRow={onAddProjectRow}
                 onDeleteProjectRow={onDeleteProjectRow}
                 onAddTaskRow={onAddTaskRow}
+                onChangeTaskEdit={onChangeTaskEdit}
+                onDeleteTaskRow={onDeleteTaskRow}
             />
             <GanttChart
                 tasks={tasks}
             />
             <DailyReportModal
+                listGroups={listGroups}
                 isOpen={isDailyReportOpen}
                 onClose={closeDailyReport}
-                listGroups={listGroups}
             />
         </main>
     );

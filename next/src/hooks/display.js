@@ -1,6 +1,6 @@
 import { master } from "./master"
 
-export const getVal = (value = '', label = '', type = '') => {
+export const format = (value = '', label = '', type = '') => {
     /** transform value */
     switch (type) {
         case 'id':
