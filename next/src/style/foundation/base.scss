@@ -23,7 +23,7 @@
 
 /* dark theme */
 [data-theme="dark"] {
-    --color-html: #222;
+    --color-html: #424242;
     --color-base: #121212;
     --color-font-base: #666;
     --color-btn-general-bg: #505050;
@@ -93,7 +93,4 @@ option {
 dt {
     position: relative;
     font-weight: bold;
-}
-dd {
-    margin-left: 4px;
 }

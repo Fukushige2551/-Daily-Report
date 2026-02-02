@@ -41,10 +41,20 @@
                 }
             }
         }
-        // .task {
-        //     grid-gap: 16px 0;
-        //     grid-template-columns: 168px 1fr;
-        //     padding-left: 16px;
-        // }
+        .task {
+            // grid-gap: 16px 0;
+            // grid-template-columns: 168px 1fr;
+            // padding-left: 16px;
+            dt {
+                margin-top: 8px;
+
+                &:first-child {
+                    margin-top: 0;
+                }
+            }
+            dd {
+                margin: 4px 0 4px 16px;
+            }
+        }
     }
 }

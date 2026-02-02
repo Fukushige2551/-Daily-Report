@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from './icons/FontAwesomeIcon';
 import Input from './forms/Input';
+import RangeCalendar from "./forms/RangeCalender.jsx";
 
 export default function TaskList({
     tasks = [],
@@ -14,17 +15,43 @@ export default function TaskList({
     onChangeTaskEdit,
     onDeleteTaskRow,
 }) {
+    /**
+     * プロジェクトメニュー
+     */
     const projectOptionRef = useRef(null);
-    const taskOptionRef = useRef(null);
 
-    // プロジェクト行オプションの開閉
+    // オプションの開閉
     const [openProjectFunction, setOpenProjectFunction] = useState({
         id: null, open: false,
     });
-    // タスク行オプションの開閉
+
+    // メニューボタン群
+    const projectMennuBtns = () => {
+        return [
+            { id: 1, type: 'sort', icon: 'link', display: '', action: () => {} },
+            { id: 2, type: 'sort', icon: 'unlink', display: '', action: () => {} },
+            { id: 3, type: 'delete', icon: 'trash', display: '', action: (id) => { setOpenProjectFunction({ id: null, open: false }); onDeleteProjectRow(id);} },
+        ]
+    }
+
+    /**
+     * タスクメニュー
+     */
+    const taskOptionRef = useRef(null);
+
+    // オプションの開閉
     const [openTaskFunction, setOpenTaskFunction] = useState({
         id: null, open: false,
     });
+
+    // メニューボタン群
+    const taskMennuBtns = () => {
+        return [
+            { id: 1, type: 'sort', icon: 'link', display: '', action: () => {} },
+            { id: 2, type: 'sort', icon: 'unlink', display: '', action: () => {} },
+            { id: 3, type: 'delete', icon: 'trash', display: '', action: (id) => { setOpenTaskFunction({ id: null, open: false }); onDeleteTaskRow(id);} },
+        ]
+    }
 
     /**
      * 外側クリックでメニューを閉じる
@@ -54,27 +81,7 @@ export default function TaskList({
         };
     }, []);
 
-    /**
-     * プロジェクト操作ボタン
-     */
-    const projectMennuBtns = () => {
-        return [
-            { id: 1, type: 'sort', icon: 'link', display: '', action: () => {} },
-            { id: 2, type: 'sort', icon: 'unlink', display: '', action: () => {} },
-            { id: 3, type: 'delete', icon: 'trash', display: '', action: (id) => { setOpenProjectFunction({ id: null, open: false }); onDeleteProjectRow(id);} },
-        ]
-    }
-
-    /**
-     * タスク操作ボタン
-     */
-    const taskMennuBtns = () => {
-        return [
-            { id: 1, type: 'sort', icon: 'link', display: '', action: () => {} },
-            { id: 2, type: 'sort', icon: 'unlink', display: '', action: () => {} },
-            { id: 3, type: 'delete', icon: 'trash', display: '', action: (id) => { setOpenTaskFunction({ id: null, open: false }); onDeleteTaskRow(id);} },
-        ]
-    }
+    const [range, setRange] = useState({ start: null, end: null });
 
     return (
         <section className='p-app__section'>
@@ -147,6 +154,10 @@ export default function TaskList({
                                 onChangeTaskEdit(task.id, 'name', e);
                             }}
                         />
+                        <button className='c-btn c-btn--clock'>
+                            <FontAwesomeIcon icon="clock" />
+                            <RangeCalendar value={range} onChange={setRange} weekStartsOn={1} />
+                        </button>
 
                         {/* タスク操作 */}
                         <button

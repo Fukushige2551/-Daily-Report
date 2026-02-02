@@ -67,8 +67,9 @@
                 }
                 &__task {
                     position: relative;
-                    // display: flex;
-                    // align-items: center;
+                    display: flex;
+                    align-items: center;
+                    padding-right: 24px;
 
                     &--add {
                         width: 100%;
@@ -76,20 +77,16 @@
 
                         &:hover {
                             cursor: pointer;
-                            background-color: $color-btn-general-bg;
+                            color: #fff;
+                            background-color: #222;
                         }
                     }
                 }
             }
             &__function {
                 position: absolute;
-                top: 0;
+                top: 1px;
                 right: 0;
-
-                &:hover {
-                    cursor: pointer;
-                    color: $color-btn-general-bg;
-                }
             }
             &__options {
                 position: absolute;

@@ -15,6 +15,12 @@ import {
     faSortDown,
     faLink,
     faUnlink,
+    faCalendar,
+    faCalendarDays,
+    faCalendarDay,
+    faCalendarWeek,
+    faCalendarCheck,
+    faClock,
 } from '@fortawesome/free-solid-svg-icons';
 
 // ライブラリに一括登録
@@ -32,6 +38,12 @@ library.add(
     faSortDown,
     faLink,
     faUnlink,
+    faCalendar,
+    faCalendarDays,
+    faCalendarDay,
+    faCalendarWeek,
+    faCalendarCheck,
+    faClock,
 );
 
 export { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
