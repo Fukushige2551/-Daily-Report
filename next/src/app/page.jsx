@@ -99,8 +99,6 @@ export default function Page({ setModal }) {
                 isOpen={isDailyReportOpen}
                 onClose={closeDailyReport}
             />
-
-            
         </main>
     );
 }

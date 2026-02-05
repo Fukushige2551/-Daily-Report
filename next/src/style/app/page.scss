@@ -69,7 +69,7 @@
                     position: relative;
                     display: flex;
                     align-items: center;
-                    padding-right: 24px;
+                    padding-right: 14px;
 
                     &--add {
                         width: 100%;
@@ -80,6 +80,14 @@
                             color: #fff;
                             background-color: #222;
                         }
+                    }
+                    &--memo {
+                        width: 100%;
+                        font-size: 1.4rem;
+                        padding: 0 0 0 16px;
+                    }
+                    &__btn {
+                        margin-right: 8px;
                     }
                 }
             }

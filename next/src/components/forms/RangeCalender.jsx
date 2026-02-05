@@ -123,25 +123,6 @@ export default function RangeCalendar({
                 );
                 })}
             </div>
-
-            <div className="c-rangeCalendar__footer">
-                <div className="c-rangeCalendar__valueLine">
-                <span>start:</span>{" "}
-                <b>{range.start ? formatYMD(range.start) : "—"}</b>
-                </div>
-                <div className="c-rangeCalendar__valueLine">
-                <span>end:</span>{" "}
-                <b>{range.end ? formatYMD(range.end) : "—"}</b>
-                </div>
-
-                <button
-                type="button"
-                onClick={() => setRange({ start: null, end: null })}
-                className="c-rangeCalendar__clearBtn"
-                >
-                clear
-                </button>
-            </div>
         </div>
     );
 }

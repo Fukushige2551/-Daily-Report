@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, Fragment } from 'react';
 import { FontAwesomeIcon } from './icons/FontAwesomeIcon';
 import Input from './forms/Input';
 import RangeCalendar from "./forms/RangeCalender.jsx";
+import TextArea from './forms/textarea';
 
 export default function TaskList({
     tasks = [],
@@ -53,6 +54,34 @@ export default function TaskList({
         ]
     }
 
+    // メモ（TextArea）開閉
+    const [openMemoTaskId, setOpenMemoTaskId] = useState(null);
+
+    /**
+     * カレンダー
+     */
+    const calendarRef = useRef(null);
+
+    // カレンダーID開閉
+    const [openCalendarTaskId, setOpenCalendarTaskId] = useState(null);
+
+    // 日付変換ユーティリティ
+    const toYMD = (d) => {
+        if (!d) return '';
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    };
+    const fromYMD = (s) => {
+        if (!s) return null;
+        const [y, m, d] = s.split('-').map(Number);
+        if (!y || !m || !d) return null;
+        const dt = new Date(y, m - 1, d);
+        dt.setHours(0, 0, 0, 0);
+        return dt;
+    };
+
     /**
      * 外側クリックでメニューを閉じる
      */
@@ -73,15 +102,22 @@ export default function TaskList({
             ) {
                 setOpenTaskFunction({ id: null, open: false });
             }
+
+            // カレンダーを閉じる
+            if (
+                openCalendarTaskId != null &&
+                calendarRef.current &&
+                !calendarRef.current.contains(event.target)
+            ) {
+                setOpenCalendarTaskId(null);
+            }
         };
 
         document.addEventListener('mousedown', handleClickOutside);
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, []);
-
-    const [range, setRange] = useState({ start: null, end: null });
+    }, [openCalendarTaskId]);
 
     return (
         <section className='p-app__section'>
@@ -140,55 +176,116 @@ export default function TaskList({
 
                     {/* タスク */}
                     {tasks.filter(task => task.project_id === id).map(task => (
-                    <div
-                        key={task.id}
-                        className='p-app__section__list__project__task'
-                    >
-                        <Input
-                            name={`task_name_${task.id}`}
-                            type='text'
-                            value={task.name || ''}
-                            placeholder={`Task ${task.id}`}
-                            className='p-app__section__list__project__task__name'
-                            onChange={(e) => {
-                                onChangeTaskEdit(task.id, 'name', e);
-                            }}
-                        />
-                        <button className='c-btn c-btn--clock'>
-                            <FontAwesomeIcon icon="clock" />
-                            <RangeCalendar value={range} onChange={setRange} weekStartsOn={1} />
-                        </button>
-
-                        {/* タスク操作 */}
-                        <button
-                            className='c-btn p-app__section__list__function'
-                            onClick={() => setOpenTaskFunction({ id: task.id, open: true })}
-                        >
-                            <FontAwesomeIcon icon="ellipsis-v" />
-                        </button>
-
-                        {/* タスク操作オプション */}
+                    <Fragment key={task.id}>
                         <div
-                            ref={taskMenuOpened(task.id) ? taskOptionRef : null}
-                            className={`p-app__section__list__options p-app__section__list__options--task ${
-                                taskMenuOpened(task.id) ? 'is-open' : 'is-closed'
-                            }`}
+                            className='p-app__section__list__project__task'
                         >
-                            {taskMennuBtns().map(({ id: btnId, type, icon, display, action }) => (
+                            <Input
+                                name={`task_name_${task.id}`}
+                                type='text'
+                                value={task.name || ''}
+                                placeholder={`Task ${task.id}`}
+                                className='p-app__section__list__project__task__name'
+                                onChange={(e) => {
+                                    onChangeTaskEdit(task.id, 'name', e);
+                                }}
+                            />
 
+                            {/* タスクメモ */}
                             <button
-                                key={btnId}
-                                type='button'
-                                className={`c-btn c-btn--${type} p-app__section__list__options__btn`}
-                                onClick={() => action(task.id)}
+                                type="button"
+                                className="c-btn p-app__section__list__project__task__btn"
+                                onClick={() => {
+                                    setOpenMemoTaskId((prev) => (prev === task.id ? null : task.id));
+                                }}
                             >
-                                {icon && <FontAwesomeIcon icon={icon} />}
-                                {display}
+                                <FontAwesomeIcon icon="file-lines" />
                             </button>
 
-                            ))}
+                            {/* タスクカレンダー */}
+                            <button
+                                type="button"
+                                className="c-btn p-app__section__list__project__task__btn"
+                                onClick={() => {
+                                    setOpenCalendarTaskId((prev) => (prev === task.id ? null : task.id));
+                                }}
+                            >
+                                <FontAwesomeIcon icon="clock" />
+                            </button>
+
+                            {/* タスク操作 */}
+                            <button
+                                className='c-btn p-app__section__list__function'
+                                onClick={() => setOpenTaskFunction({ id: task.id, open: true })}
+                            >
+                                <FontAwesomeIcon icon="ellipsis-v" />
+                            </button>
+
+                            {/* タスク操作オプション */}
+                            <div
+                                ref={taskMenuOpened(task.id) ? taskOptionRef : null}
+                                className={`p-app__section__list__options p-app__section__list__options--task ${
+                                    taskMenuOpened(task.id) ? 'is-open' : 'is-closed'
+                                }`}
+                            >
+                                {taskMennuBtns().map(({ id: btnId, type, icon, display, action }) => (
+
+                                <button
+                                    key={btnId}
+                                    type='button'
+                                    className={`c-btn c-btn--${type} p-app__section__list__options__btn`}
+                                    onClick={() => action(task.id)}
+                                >
+                                    {icon && <FontAwesomeIcon icon={icon} />}
+                                    {display}
+                                </button>
+
+                                ))}
+                            </div>
+
+                            {/* カレンダー */}
+                            {openCalendarTaskId === task.id && (
+                            <div ref={calendarRef}>
+                                <RangeCalendar
+                                    value={{
+                                        start: fromYMD(task.start_date),
+                                        end: fromYMD(task.end_date),
+                                    }}
+                                    onChange={(nextRange) => {
+                                        const startYMD = nextRange.start ? toYMD(nextRange.start) : '';
+                                        const endYMD = nextRange.end ? toYMD(nextRange.end) : '';
+
+                                        // 1回目クリック：startだけ入る（endは空のまま）
+                                        if (startYMD) {
+                                            onChangeTaskEdit(task.id, 'start_date', startYMD);
+                                        }
+
+                                        // 2回目クリック：endが入る
+                                        if (endYMD) {
+                                            onChangeTaskEdit(task.id, 'end_date', endYMD);
+                                        } else {
+                                            // end未確定の間は end_date を空にしたいならこれ
+                                            onChangeTaskEdit(task.id, 'end_date', '');
+                                        }
+                                    }}
+                                    weekStartsOn={1}
+                                />
+                            </div>
+                            )}
                         </div>
-                    </div>
+
+                        {openMemoTaskId === task.id && (
+                        <TextArea
+                            name={`description_${task.id}`}
+                            value={task.description || ''}
+                            placeholder=""
+                            className="p-app__section__list__project__task--memo"
+                            onChange={(e) => {
+                                onChangeTaskEdit(task.id, 'description', e);
+                            }}
+                        />
+                        )}
+                    </Fragment>
                     ))}
 
                     {/* タスク追加 */}
