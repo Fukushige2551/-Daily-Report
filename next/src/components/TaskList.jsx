@@ -283,7 +283,7 @@ export default function TaskList({
                         <TextArea
                             name={`description_${task.id}`}
                             value={task.description || ''}
-                            placeholder=""
+                            placeholder="--"
                             className="p-app__section__list__project__task--memo"
                             onChange={(e) => {
                             onChangeTaskEdit(task.id, 'description', e);

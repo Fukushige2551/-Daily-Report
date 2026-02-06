@@ -30,13 +30,17 @@
         color: $color-btn-general-bg--hover;
     }
 
-    &--general {
-        color: $color-btn-general-font;
+    &--control {
         font-weight: bold;
         border: 1px solid #ddd;
         border-radius: 10px;
         background-color: $color-btn-general-bg;
-        padding: 4px 8px;
+        padding: 8px 16px;
+        transition: all 0.2s;
+
+        &:hover {
+            background-color: $color-btn-general-bg--hover;
+        }
     }
     &--add {
         display: inline-block;

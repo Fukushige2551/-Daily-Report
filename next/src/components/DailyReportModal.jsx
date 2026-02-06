@@ -58,6 +58,7 @@ export default function DailyReportModal({
                 {listGroups.map((l) => {
                 const pid = l[0];
                 const tasks = l[1] ?? [];
+                console.log(l);
                 return (
                     <React.Fragment key={pid}>
                     <dt>{master.project_id?.[pid] ?? `Project ${pid}`}</dt>
@@ -84,12 +85,12 @@ export default function DailyReportModal({
             <div className='c-modal__body'>
                 <section className='c-modal__body__head'>
                 {page === 1 && (
-                    <button className='c-btn--general' onClick={close}>
+                    <button className='c-btn--control' onClick={close}>
                     閉じる
                     </button>
                 )}
                 {page === 2 && (
-                    <button className='c-btn--general' onClick={goBack}>
+                    <button className='c-btn--control' onClick={goBack}>
                     戻る
                     </button>
                 )}
@@ -97,12 +98,12 @@ export default function DailyReportModal({
                 <h3>日報作成</h3>
 
                 {page === 1 && (
-                    <button className='c-btn--general' onClick={goNext}>
+                    <button className='c-btn--control' onClick={goNext}>
                     次へ
                     </button>
                 )}
                 {page === 2 && (
-                    <button className='c-btn--general' onClick={handleSubmit}>
+                    <button className='c-btn--create' onClick={handleSubmit}>
                     投稿
                     </button>
                 )}

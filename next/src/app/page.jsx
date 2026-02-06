@@ -74,7 +74,8 @@ export default function Page({ setModal }) {
     return (
         <main className='p-app'>
             <div className='p-app__top'>
-                <h1>Dashboard</h1>
+                {/* <h1>Dashboard</h1> */}
+                <h1></h1>
                 <button className='c-btn c-btn--create' onClick={openDailyReport}>
                     日報作成
                 </button>
