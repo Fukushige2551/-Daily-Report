@@ -55,7 +55,7 @@ export default function TaskList({
     }
 
     // メモ（TextArea）開閉
-    const [openMemoTaskId, setOpenMemoTaskId] = useState(null);
+    const [openMemoTaskIds, setOpenMemoTaskIds] = useState(() => new Set());
 
     /**
      * カレンダー
@@ -196,7 +196,12 @@ export default function TaskList({
                                 type="button"
                                 className="c-btn p-app__section__list__project__task__btn"
                                 onClick={() => {
-                                    setOpenMemoTaskId((prev) => (prev === task.id ? null : task.id));
+                                    setOpenMemoTaskIds((prev) => {
+                                        const next = new Set(prev);
+                                        if (next.has(task.id)) next.delete(task.id);
+                                        else next.add(task.id);
+                                        return next;
+                                    });
                                 }}
                             >
                                 <FontAwesomeIcon icon="file-lines" />
@@ -274,14 +279,14 @@ export default function TaskList({
                             )}
                         </div>
 
-                        {openMemoTaskId === task.id && (
+                        {openMemoTaskIds.has(task.id) && (
                         <TextArea
                             name={`description_${task.id}`}
                             value={task.description || ''}
                             placeholder=""
                             className="p-app__section__list__project__task--memo"
                             onChange={(e) => {
-                                onChangeTaskEdit(task.id, 'description', e);
+                            onChangeTaskEdit(task.id, 'description', e);
                             }}
                         />
                         )}
